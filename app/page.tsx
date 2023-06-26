@@ -36,6 +36,11 @@ export default async function Home() {
     alert("couldnt fetch");
   }
 
+  async function test() {
+    "use server"
+    console.log(`hi from server`)
+  }
+  test()
   // async function newRecord(input: baseSendData, usingCustomSett: boolean) {
   //   "use server";
 
