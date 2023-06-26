@@ -33,7 +33,7 @@ export default async function Home() {
   try {
     allInfo = await prisma.base.findMany();
   } catch (error) {
-    alert("couldnt fetch");
+    console.log("couldnt fetch");
   }
 
   async function test() {
