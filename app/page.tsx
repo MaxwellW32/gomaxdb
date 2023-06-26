@@ -8,24 +8,24 @@ import startShapes from "@/utilities/StartShapes";
 
 const prisma = new PrismaClient();
 
-// interface baseReadData {
-//   id: string;
-//   createdAt: Date;
-//   username: string;
-//   speed: number;
-//   gravity: number;
-//   shapes: string;
-//   colors: string;
-//   angle: number;
-//   text: string;
-//   audioLink: string | null;
-//   ytLinks: string | null;
-//   imgLinks: string | null;
-// }
+interface baseReadData {
+  id: string;
+  createdAt: Date;
+  username: string;
+  speed: number;
+  gravity: number;
+  shapes: string;
+  colors: string;
+  angle: number;
+  text: string;
+  audioLink: string | null;
+  ytLinks: string | null;
+  imgLinks: string | null;
+}
 
-// interface baseSendData extends Omit<baseReadData, "id" | "createdAt"> { }
+interface baseSendData extends Omit<baseReadData, "id" | "createdAt"> { }
 
-// export type { baseReadData, baseSendData };
+export type { baseReadData, baseSendData };
 
 // export default async function Home() {
 //   let allInfo: baseReadData[] = [];
@@ -127,8 +127,15 @@ const prisma = new PrismaClient();
 // }
 
 export default async function Home() {
+  let allInfo: baseReadData[] = [];
 
-  const allInfo = await prisma.base.findMany();
+
+  try {
+    allInfo = await prisma.base.findMany();
+
+  } catch (error) {
+    alert("couldnt fetch");
+  }
 
   return (
     <p>hi there {JSON.stringify(allInfo)}</p>
