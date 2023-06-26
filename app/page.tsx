@@ -113,14 +113,6 @@ export default async function Home() {
 
       <RecordInput newRecord={newRecord} />
 
-      <div className={styles.squareHolder}>
-        {allInfo.map((eachRecord) => (
-          <div key={eachRecord.id}>{JSON.stringify({ eachRecord })}
-            <br />
-          </div>
-        ))}
-      </div>
-
 
       <div className={styles.squareHolder}>
         {allInfo.map((eachRecord) => (
@@ -131,6 +123,7 @@ export default async function Home() {
           />
         ))}
       </div>
+
     </main>
   );
 }
