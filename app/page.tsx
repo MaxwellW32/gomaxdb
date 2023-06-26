@@ -1,12 +1,12 @@
-// import Image from "next/image";
-// import styles from "./page.module.css";
-// import { PrismaClient } from "@prisma/client";
-// import { revalidatePath } from "next/cache";
-// import StyleSquare from "@/Components/homepage/StyleSquare";
-// import RecordInput from "@/Components/homepage/RecordInput";
-// import startShapes from "@/utilities/StartShapes";
+import Image from "next/image";
+import styles from "./page.module.css";
+import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import StyleSquare from "@/Components/homepage/StyleSquare";
+import RecordInput from "@/Components/homepage/RecordInput";
+import startShapes from "@/utilities/StartShapes";
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 // interface baseReadData {
 //   id: string;
@@ -128,7 +128,9 @@
 
 export default async function Home() {
 
+  const allInfo = await prisma.base.findMany();
+
   return (
-    <p>hi there</p>
+    <p>hi there {JSON.stringify(allInfo)}</p>
   )
 }
