@@ -115,7 +115,7 @@ export default async function Home() {
 
       <div className={styles.squareHolder}>
         {allInfo.map((eachRecord) => (
-          <div>{JSON.stringify({ eachRecord })}
+          <div key={eachRecord.id}>{JSON.stringify({ eachRecord })}
             <br />
           </div>
         ))}
