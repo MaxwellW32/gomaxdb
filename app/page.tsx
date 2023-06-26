@@ -27,15 +27,6 @@ interface baseSendData extends Omit<baseReadData, "id" | "createdAt"> { }
 
 export type { baseReadData, baseSendData };
 
-// export default async function Home() {
-//   let allInfo: baseReadData[] = [];
-
-//   try {
-//     allInfo = await prisma.base.findMany();
-//   } catch (error) {
-//     alert("couldnt fetch");
-//   }
-
 //   async function newRecord(input: baseSendData, usingCustomSett: boolean) {
 //     "use server";
 
@@ -126,8 +117,11 @@ export type { baseReadData, baseSendData };
 //   );
 // }
 
+
+
 export default async function Home() {
   let allInfo: baseReadData[] = [];
+
 
 
   try {
@@ -135,6 +129,23 @@ export default async function Home() {
 
   } catch (error) {
     alert("couldnt fetch");
+  }
+
+
+  try {
+    await prisma.base.create({
+      data: {
+        username: "max",
+        speed: 500,
+        gravity: 500,
+        shapes: "GG",
+        colors: "red|blue",
+        angle: 40,
+        text: "sup"
+      },
+    });
+
+  } catch (error) {
   }
 
   return (
