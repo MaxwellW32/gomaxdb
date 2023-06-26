@@ -1,95 +1,127 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from "next/image";
+import styles from "./page.module.css";
+import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import StyleSquare from "@/Components/homepage/StyleSquare";
+import RecordInput from "@/Components/homepage/RecordInput";
+import startShapes from "@/utilities/StartShapes";
 
-export default function Home() {
+const prisma = new PrismaClient();
+
+interface baseReadData {
+  id: string;
+  createdAt: Date;
+  username: string;
+  speed: number;
+  gravity: number;
+  shapes: string;
+  colors: string;
+  angle: number;
+  text: string;
+  audioLink: string | null;
+  ytLinks: string | null;
+  imgLinks: string | null;
+}
+
+interface baseSendData extends Omit<baseReadData, "id" | "createdAt"> { }
+
+export type { baseReadData, baseSendData };
+
+export default async function Home() {
+  let allInfo: baseReadData[] = [];
+
+  try {
+    allInfo = await prisma.base.findMany();
+  } catch (error) {
+    alert("couldnt fetch");
+  }
+
+  async function newRecord(input: baseSendData, usingCustomSett: boolean) {
+    "use server";
+
+    let newRecordObj = {} as baseSendData;
+
+    if (usingCustomSett) {
+      //validation
+      const preValidData = { ...input };
+
+      preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
+      preValidData.shapes =
+        preValidData.shapes && preValidData.shapes.length > 1
+          ? preValidData.shapes
+          : "BA";
+      preValidData.gravity =
+        preValidData.gravity >= 500 ? preValidData.gravity : 500;
+      preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
+
+      newRecordObj = { ...preValidData };
+    } else {
+      newRecordObj = { ...input, ...mkRndBgData() };
+    }
+
+    function mkRndBgData() {
+      const colors = [
+        "red",
+        "blue",
+        "yellow",
+        "green",
+        "purple",
+        "orange",
+        "pink",
+      ];
+
+      const newObj = {
+        colors:
+          colors[Math.floor(Math.random() * colors.length)] +
+          "|" +
+          colors[Math.floor(Math.random() * colors.length)],
+        speed: Math.floor(Math.random() * 6000) + 500,
+        shapes:
+          startShapes[Math.floor(Math.random() * startShapes.length)] +
+          startShapes[Math.floor(Math.random() * startShapes.length)],
+        gravity: Math.floor(Math.random() * 11) * 1000 + 500,
+        angle: Math.floor(Math.random() * 361),
+      };
+
+      return newObj;
+    }
+
+    await prisma.base.create({
+      data: newRecordObj,
+    });
+
+    revalidatePath("/");
+  }
+
+  async function deleteSpecific(input: string) {
+    "use server";
+
+    const seenId = input;
+
+    await prisma.base.delete({
+      where: { id: seenId },
+    });
+    console.log(`deleted specific ${seenId}`);
+    revalidatePath("/");
+  }
+
+  if (!allInfo) return "not yet found";
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <main className={styles.mainDiv}>
+      <h1>Public Notes</h1>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <RecordInput newRecord={newRecord} />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className={styles.squareHolder}>
+        {allInfo.map((eachRecord) => (
+          <StyleSquare
+            key={eachRecord.id}
+            {...eachRecord}
+            deleteSpecific={deleteSpecific}
+          />
+        ))}
       </div>
     </main>
-  )
+  );
 }
