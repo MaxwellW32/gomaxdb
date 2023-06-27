@@ -109,7 +109,7 @@ export default async function Home() {
 
   return (
     <main className={styles.mainDiv}>
-      <h1>Public Notes</h1>
+      <h1>Community Board</h1>
 
       <RecordInput newRecord={newRecord} />
 
