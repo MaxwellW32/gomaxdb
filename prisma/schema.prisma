@@ -12,16 +12,17 @@ datasource db {
 }
 
 model base {
+  username String
+  text     String @db.Text
+
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  username  String
-  speed     Int
-  gravity   Int
-  shapes    String
-  colors    String
-  angle     Int
-  text      String
-  audioLink String?
-  ytLinks   String?
-  imgLinks  String?
+  speed     Int      @default(500)
+  gravity   Int      @default(500)
+  shapes    String   @default("BA")
+  colors    String   @default("red|blue")
+  angle     Int      @default(0)
+  audioLink String?  @db.Text
+  ytLinks   String?  @db.Text
+  imgLinks  String?  @db.Text
 }

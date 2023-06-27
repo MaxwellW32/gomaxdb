@@ -2,39 +2,40 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import startShapes from "@/utilities/StartShapes";
-import type { baseSendData } from "@/app/page";
+import type { baseReadData } from "@/app/page";
 import ReactPlayer from "react-player/youtube";
 
 export default function RecordInput({
   newRecord,
 }: {
-  newRecord: (input: baseSendData, usingCustomSett: boolean) => Promise<void>;
+  newRecord: (input: baseReadData) => Promise<void>;
 }) {
   const labelRef = useRef<HTMLLabelElement>(null!);
   const [showMore, showMoreSet] = useState(false);
   const [usingCustomSett, usingCustomSettSet] = useState(false);
 
-  const allDataInitialValue: baseSendData = {
+  const allDataInitialValue: baseReadData = {
+    id: undefined,
+    createdAt: undefined,
     text: "",
     username: "",
-    gravity: 500,
-    speed: 500,
-    colors: `red|blue`,
-    angle: 0,
-    shapes: "BA",
+    speed: undefined,
+    gravity: undefined,
+    shapes: undefined,
+    colors: undefined,
+    angle: undefined,
     audioLink: null,
     ytLinks: null,
     imgLinks: null,
   };
 
   const [allData, allDataSet] = useState({ ...allDataInitialValue });
-  console.log(allData.ytLinks)
 
   const [singleImageInput, singleImageInputSet] = useState("");
   const [singleYtInput, singleYtInputSet] = useState("");
 
 
-  function saveImgArrToAllData(input: string) {
+  function saveImgArr(input: string) {
     if (input.length > 0) {
 
       allDataSet(prevData => {
@@ -53,7 +54,7 @@ export default function RecordInput({
 
   }
 
-  function saveYtArrToAllData(input: string) {
+  function saveYtArr(input: string) {
     if (input.length > 0) {
 
       allDataSet(prevData => {
@@ -76,17 +77,18 @@ export default function RecordInput({
     //validation test
     const newObj = { ...allData };
 
-    if (newObj.colors === "|") {
-      newObj.colors = "red|blue";
-    }
-
-    newRecord(newObj, usingCustomSett);
+    newRecord(newObj);
   }
 
-  const [colorComb, colorCombSet] = useState(["", ""]);
+  const [colorComb, colorCombSet] = useState<(undefined | string)[]>([undefined, undefined]);
+
   //combine color combination into allData
   useEffect(() => {
-    let newColor = colorComb[0] + "|" + colorComb[1];
+    let newColor1 = colorComb[0] ? colorComb[0] : "undefined"
+    let newColor2 = colorComb[1] ? colorComb[1] : "undefined";
+
+    let newColor = newColor1 + "|" + newColor2
+
     allDataSet((prevData) => {
       return { ...prevData, colors: newColor };
     });
@@ -165,11 +167,11 @@ export default function RecordInput({
               id="ytLink"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  saveYtArrToAllData(singleYtInput)
+                  saveYtArr(singleYtInput)
                 }
               }}
               onBlur={() => {
-                saveYtArrToAllData(singleYtInput)
+                saveYtArr(singleYtInput)
               }}
               onChange={(e) => {
                 singleYtInputSet(e.target.value)
@@ -197,11 +199,11 @@ export default function RecordInput({
               value={singleImageInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  saveImgArrToAllData(singleImageInput)
+                  saveImgArr(singleImageInput)
                 }
               }}
               onBlur={() => {
-                saveImgArrToAllData(singleImageInput)
+                saveImgArr(singleImageInput)
               }}
             />
 
@@ -263,7 +265,7 @@ export default function RecordInput({
                   return { ...prevSettings, gravity: newGrav };
                 });
               }}
-              value={allData.gravity}
+              value={allData.gravity ? allData.gravity : undefined}
             />
 
             <label htmlFor="speedAmt">Speed</label>
@@ -285,7 +287,7 @@ export default function RecordInput({
                   return { ...prevSettings, speed: newSpeed };
                 });
               }}
-              value={allData.speed}
+              value={allData.speed ? allData.speed : undefined}
             />
 
             <label htmlFor="colorName1">Colors - # or name</label>
@@ -338,7 +340,7 @@ export default function RecordInput({
                   return { ...prevSettings, angle: newAngle };
                 });
               }}
-              value={allData.angle}
+              value={allData.angle ? allData.angle : undefined}
             />
 
             <label htmlFor="shapesName">Shapes</label>
@@ -371,7 +373,7 @@ export default function RecordInput({
                   return { ...prevSettings, shapes: newText };
                 });
               }}
-              value={allData.shapes}
+              value={allData.shapes ? allData.shapes : undefined}
             />
           </div>
         )}
@@ -388,6 +390,8 @@ export default function RecordInput({
                 ...allDataInitialValue,
                 username: allData.username,
               });
+
+              colorCombSet([undefined, undefined])
             }, 500);
           }}
         >

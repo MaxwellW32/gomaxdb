@@ -46,7 +46,9 @@
 }
 
 .contentCont> :nth-child(1) {
-    height: min-content;
+    height: max(100%, min-content);
+    /* height: clamp(20px, 40%, 400px); */
+    /* height: min-content; */
 }
 
 .contentCont::-webkit-scrollbar {
@@ -60,11 +62,9 @@
 }
 
 .textCont {
-    padding: 2rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    padding-bottom: 7rem;
 }
 
 .squareText {

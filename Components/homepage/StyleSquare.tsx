@@ -20,7 +20,7 @@ export default function StyleSquare({
   ytLinks,
   deleteSpecific,
 }: baseReadData & { deleteSpecific: (input: string) => void }) {
-  const seenColors = colors.split("|");
+  const seenColors = colors!.split("|");
   const mainBoxRef = useRef<HTMLDivElement>(null!);
   const ball = useRef<HTMLDivElement>(null!);
 
@@ -66,7 +66,7 @@ export default function StyleSquare({
 
   //parse shapes
   useEffect(() => {
-    const firstLetter = shapes[0];
+    const firstLetter = shapes![0];
 
     let counter = 0;
 
@@ -165,8 +165,9 @@ export default function StyleSquare({
           display: !shouldDisa ? "block" : "none",
           opacity: mouseHovering ? "1" : "0",
         }}
-        onClick={() => {
-          deleteSpecific(id);
+        onClick={(e) => {
+          e.stopPropagation()
+          deleteSpecific(id!);
         }}
       >
         <svg
@@ -207,8 +208,8 @@ export default function StyleSquare({
       {amountOfDroplets.map((eachItem) => (
         <Droplet
           key={eachItem}
-          gravity={gravity}
-          shapes={shapes}
+          gravity={gravity!}
+          shapes={shapes!}
           parentHeight={parentBoxHeight}
         />
       ))}

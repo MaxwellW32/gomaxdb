@@ -9,23 +9,24 @@ import startShapes from "@/utilities/StartShapes";
 const prisma = new PrismaClient();
 
 interface baseReadData {
-  id: string;
-  createdAt: Date;
-  username: string;
-  speed: number;
-  gravity: number;
-  shapes: string;
-  colors: string;
-  angle: number;
   text: string;
+  username: string;
+
+  id: string | undefined;
+  createdAt: Date | undefined;
+  speed: number | undefined;
+  gravity: number | undefined;
+  shapes: string | undefined;
+  colors: string | undefined;
+  angle: number | undefined;
+
   audioLink: string | null;
   ytLinks: string | null;
   imgLinks: string | null;
 }
 
-interface baseSendData extends Omit<baseReadData, "id" | "createdAt"> { }
 
-export type { baseReadData, baseSendData };
+export type { baseReadData };
 
 export default async function Home() {
   let allInfo: baseReadData[] = [];
@@ -36,61 +37,83 @@ export default async function Home() {
     console.log("couldnt fetch");
   }
 
-  async function newRecord(input: baseSendData, usingCustomSett: boolean) {
+  async function newRecord(input: baseReadData) {
     "use server";
 
-    let newRecordObj = {} as baseSendData;
+    //check if each item exists
+    //if they dont exist make rnd data for them
 
-    if (usingCustomSett) {
-      //validation
-      const preValidData = { ...input };
+    function addRndData(input: baseReadData) {
+      const colors = ["red", "blue", "yellow", "green", "purple", "orange", "pink"];
 
-      preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
-      preValidData.shapes =
-        preValidData.shapes && preValidData.shapes.length > 1
-          ? preValidData.shapes
-          : "BA";
-      preValidData.gravity =
-        preValidData.gravity >= 500 ? preValidData.gravity : 500;
-      preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
-
-      newRecordObj = { ...preValidData };
-    } else {
-      newRecordObj = { ...input, ...mkRndBgData() };
-    }
-
-    function mkRndBgData() {
-      const colors = [
-        "red",
-        "blue",
-        "yellow",
-        "green",
-        "purple",
-        "orange",
-        "pink",
-      ];
-
-      const newObj = {
-        colors:
-          colors[Math.floor(Math.random() * colors.length)] +
-          "|" +
-          colors[Math.floor(Math.random() * colors.length)],
-        speed: Math.floor(Math.random() * 6000) + 500,
-        shapes:
-          startShapes[Math.floor(Math.random() * startShapes.length)] +
-          startShapes[Math.floor(Math.random() * startShapes.length)],
-        gravity: Math.floor(Math.random() * 11) * 1000 + 500,
+      const rndData = {
+        singleColor: () => {
+          return colors[Math.floor(Math.random() * colors.length)]
+        },
         angle: Math.floor(Math.random() * 361),
-      };
+        gravity: Math.floor(Math.random() * 11) * 1000 + 500,
+        shapes: startShapes[Math.floor(Math.random() * startShapes.length)] + startShapes[Math.floor(Math.random() * startShapes.length)],
+        speed: Math.floor(Math.random() * 6000) + 500
+      }
 
-      return newObj;
+      const inputCols = input.colors!.split("|")
+
+      if (inputCols[0] === "undefined") {
+        inputCols[0] = rndData.singleColor()
+      }
+
+      if (inputCols[1] === "undefined") {
+        inputCols[1] = rndData.singleColor()
+      }
+
+      input.colors = `${inputCols[0]}|${inputCols[1]}`
+
+      //add em together
+
+      if (!input.angle) {
+        input.angle = rndData.angle
+      }
+
+      if (!input.gravity) {
+        input.gravity = rndData.gravity
+      }
+
+      if (!input.shapes) {
+        input.shapes = rndData.shapes
+      }
+
+      if (!input.speed) {
+        input.speed = rndData.speed
+      }
     }
+
+    addRndData(input)
 
     await prisma.base.create({
-      data: newRecordObj,
+      data: input,
     });
 
     revalidatePath("/");
+
+
+
+    // if (usingCustomSett) {
+    //   //validation
+    //   const preValidData = { ...input };
+
+    //   preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
+    //   preValidData.shapes =
+    //     preValidData.shapes && preValidData.shapes.length > 1
+    //       ? preValidData.shapes
+    //       : "BA";
+    //   preValidData.gravity =
+    //     preValidData.gravity >= 500 ? preValidData.gravity : 500;
+    //   preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
+
+    //   newRecordObj = { ...preValidData };
+    // } else {
+    //   newRecordObj = { ...input, ...mkRndBgData() };
+    // }
   }
 
   async function deleteSpecific(input: string) {
