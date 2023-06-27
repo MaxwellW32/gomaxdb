@@ -46,9 +46,7 @@
 }
 
 .contentCont> :nth-child(1) {
-    height: max(100%, min-content);
-    /* height: clamp(20px, 40%, 400px); */
-    /* height: min-content; */
+    height: min-content;
 }
 
 .contentCont::-webkit-scrollbar {

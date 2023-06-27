@@ -9,8 +9,8 @@ import startShapes from "@/utilities/StartShapes";
 const prisma = new PrismaClient();
 
 interface baseReadData {
-  text: string;
   username: string;
+  text: string;
 
   id: string | undefined;
   createdAt: Date | undefined;
@@ -20,9 +20,9 @@ interface baseReadData {
   colors: string | undefined;
   angle: number | undefined;
 
-  audioLink: string | null;
-  ytLinks: string | null;
-  imgLinks: string | null;
+  audioLink: string | undefined;
+  ytLinks: string | undefined;
+  imgLinks: string | undefined;
 }
 
 
@@ -34,7 +34,7 @@ export default async function Home() {
   try {
     allInfo = await prisma.base.findMany();
   } catch (error) {
-    console.log("couldnt fetch");
+    console.log("couldnt fetch", error);
   }
 
   async function newRecord(input: baseReadData) {

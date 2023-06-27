@@ -22,7 +22,7 @@ model base {
   shapes    String   @default("BA")
   colors    String   @default("red|blue")
   angle     Int      @default(0)
-  audioLink String?  @db.Text
-  ytLinks   String?  @db.Text
-  imgLinks  String?  @db.Text
+  audioLink String   @default("") @db.Text
+  ytLinks   String   @default("") @db.Text
+  imgLinks  String   @default("") @db.Text
 }

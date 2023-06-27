@@ -24,9 +24,9 @@ export default function RecordInput({
     shapes: undefined,
     colors: undefined,
     angle: undefined,
-    audioLink: null,
-    ytLinks: null,
-    imgLinks: null,
+    audioLink: undefined,
+    ytLinks: undefined,
+    imgLinks: undefined,
   };
 
   const [allData, allDataSet] = useState({ ...allDataInitialValue });
@@ -119,7 +119,7 @@ export default function RecordInput({
             <input
               placeholder="Enter Username "
               onChange={(e) => {
-                const name = e.target.value.toLowerCase();
+                const name = e.target.value;
 
                 allDataSet((prevData) => {
                   return { ...prevData, username: name };
@@ -152,7 +152,7 @@ export default function RecordInput({
                   return { ...prevData, audioLink: e.target.value };
                 });
               }}
-              value={allData.audioLink === null ? "" : allData.audioLink}
+              value={allData.audioLink}
             />
 
             {allData.audioLink &&
@@ -181,8 +181,8 @@ export default function RecordInput({
             {allData.ytLinks &&
 
               <div className={styles.prevYtCont}>
-                {JSON.parse(allData.ytLinks).map((eachLink: string) => (
-                  <PreviewYtVids input={eachLink} />
+                {JSON.parse(allData.ytLinks).map((eachLink: string, index: number) => (
+                  <PreviewYtVids key={index} input={eachLink} />
                 ))}
               </div>
             }
@@ -209,8 +209,8 @@ export default function RecordInput({
 
             {allData.imgLinks &&
               <div className={styles.prevImageCont}>
-                {JSON.parse(allData.imgLinks).map((eachLink: string) => (
-                  <PreviewImages input={eachLink} />
+                {JSON.parse(allData.imgLinks).map((eachLink: string, index: number) => (
+                  <PreviewImages key={index} input={eachLink} />
                 ))}
               </div>
             }

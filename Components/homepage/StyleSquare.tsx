@@ -27,19 +27,19 @@ export default function StyleSquare({
   const [position, setPosition] = useState(0);
   const ballAnimTime = speed;
 
-  const [seenImgLinks, seenImgLinksSet] = useState<string[] | null>(() => {
-    if (imgLinks) {
-      return JSON.parse(imgLinks)
+  const [seenImgLinks, seenImgLinksSet] = useState<string[] | undefined>(() => {
+    if (imgLinks!.length > 0) {
+      return JSON.parse(imgLinks!)
     } else {
-      return null
+      return undefined
     }
   })
 
-  const [seenYtLinks, seenYtLinksSet] = useState<string[] | null>(() => {
-    if (ytLinks) {
-      return JSON.parse(ytLinks)
+  const [seenYtLinks, seenYtLinksSet] = useState<string[] | undefined>(() => {
+    if (ytLinks!.length > 0) {
+      return JSON.parse(ytLinks!)
     } else {
-      return null
+      return undefined
     }
   })
 
@@ -189,7 +189,7 @@ export default function StyleSquare({
           loop={true}
           playing={mouseClicked}
           url={
-            audioLink !== null
+            audioLink!.length > 0
               ? audioLink
               : "https://www.youtube.com/watch?v=l9LNIUNa7x4&ab_channel=Tatsumi"
           }
@@ -232,15 +232,16 @@ export default function StyleSquare({
         </div>
 
         {seenImgLinks && <>
-          {seenImgLinks.map(eachLink => (
-            <img src={eachLink} />
+          {seenImgLinks.map((eachLink, index) => (
+            <img key={index} src={eachLink} />
           ))}
         </>}
 
 
         {seenYtLinks && <>
-          {seenYtLinks.map(eachLink => (
+          {seenYtLinks.map((eachLink, index) => (
             <ReactPlayer
+              key={index}
               playing={false}
               url={eachLink}
             />
