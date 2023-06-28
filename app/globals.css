@@ -114,3 +114,11 @@ body {
     background-color: black;
     color: white;
 }
+
+
+@keyframes flash {
+    to {
+        color: black;
+    }
+
+}

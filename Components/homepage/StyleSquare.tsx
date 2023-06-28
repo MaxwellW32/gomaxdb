@@ -149,7 +149,10 @@ export default function StyleSquare({
     };
   }, [mouseHovering, adminSignin]);
 
+  const defaultAudio = "https://www.youtube.com/watch?v=l9LNIUNa7x4&ab_channel=Tatsumi"
+
   const [mouseClicked, mouseClickedSet] = useState(false);
+
   return (
     <div
       onMouseEnter={() => mouseHoveringSet(true)}
@@ -157,6 +160,7 @@ export default function StyleSquare({
       onMouseDown={() => mouseClickedSet((prev) => !prev)}
       style={{
         background: `linear-gradient(${angle}deg, ${seenColors[0]}, ${seenColors[1]})`,
+        transition: "all 2s"
       }}
       className={styles.mainBox}
       ref={mainBoxRef}
@@ -193,7 +197,7 @@ export default function StyleSquare({
           url={
             audioLink!.length > 0
               ? audioLink
-              : "https://www.youtube.com/watch?v=l9LNIUNa7x4&ab_channel=Tatsumi"
+              : defaultAudio
           }
         />
       </div>
@@ -219,7 +223,7 @@ export default function StyleSquare({
       <div className={styles.contentCont}>
 
         <div className={styles.textCont}>
-          <p className={styles.squareText}>{text}</p>
+          <p style={{ animation: mouseClicked ? "flash 2s infinite alternate" : "none" }} className={styles.squareText}>{text}</p>
 
           <p className={styles.displayName}>{username} -{" "}
 
