@@ -5,6 +5,7 @@ import useShapesLookup, { shapesLookup } from "@/utilities/ShapesLookup";
 import startShapes from "@/utilities/StartShapes";
 import ReactPlayer from "react-player/youtube";
 import type { baseReadData } from "@/app/page";
+import Moment from 'react-moment';
 
 export default function StyleSquare({
   id,
@@ -18,6 +19,7 @@ export default function StyleSquare({
   audioLink,
   imgLinks,
   ytLinks,
+  createdAt,
   deleteSpecific,
 }: baseReadData & { deleteSpecific: (input: string) => void }) {
   const seenColors = colors!.split("|");
@@ -219,8 +221,9 @@ export default function StyleSquare({
         <div className={styles.textCont}>
           <p className={styles.squareText}>{text}</p>
 
-          <p className={styles.displayName}>
-            {username ? "- " : ""}{username}
+          <p className={styles.displayName}>{username} -{" "}
+
+            <Moment fromNow>{createdAt}</Moment>
           </p>
 
           <p

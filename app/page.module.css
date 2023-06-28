@@ -1,7 +1,10 @@
 .squareHolder {
+    padding: 1rem 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
     grid-auto-rows: 200px;
+
+    row-gap: 4rem;
 }
 
 .mainDiv {
