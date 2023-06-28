@@ -152,7 +152,7 @@ export default function StyleSquare({
     <div
       onMouseEnter={() => mouseHoveringSet(true)}
       onMouseLeave={() => mouseHoveringSet(false)}
-      onClick={() => mouseClickedSet((prev) => !prev)}
+      onMouseDown={() => mouseClickedSet((prev) => !prev)}
       style={{
         background: `linear-gradient(${angle}deg, ${seenColors[0]}, ${seenColors[1]})`,
       }}
@@ -220,7 +220,7 @@ export default function StyleSquare({
           <p className={styles.squareText}>{text}</p>
 
           <p className={styles.displayName}>
-            {username} {username.length > 0 ? "-" : ""}
+            {username ? "- " : ""}{username}
           </p>
 
           <p
