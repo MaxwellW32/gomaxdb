@@ -49,11 +49,12 @@
 }
 
 .contentCont::-webkit-scrollbar-track {
-    background-color: #1e1e24;
+    background-color: #38388D;
 }
 
 .contentCont::-webkit-scrollbar-thumb {
-    background-color: #d004a4;
+    background-color: #01A594;
+    border-bottom: 2rem solid var(--uniqueAudioSeen);
 }
 
 .contentCont img {

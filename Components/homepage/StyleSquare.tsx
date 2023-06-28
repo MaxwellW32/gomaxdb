@@ -205,7 +205,10 @@ export default function StyleSquare({
       <div
         style={{
           translate: `${position}px`,
-          transition: `translate ${ballAnimTime}ms`,
+          transition: `translate ${ballAnimTime}ms, scale 10s`,
+          scale: mouseClicked ? `3` : `1`,
+          backgroundColor: mouseClicked ? `blue` : `#000`,
+          animation: mouseClicked ? `colorShow 4s infinite` : `none`
         }}
         className={styles.ball}
         ref={ball}
@@ -220,7 +223,7 @@ export default function StyleSquare({
         />
       ))}
 
-      <div className={styles.contentCont}>
+      <div className={styles.contentCont} style={{ "--uniqueAudioSeen": audioLink ? "#F24405" : "none" } as React.CSSProperties}>
 
         <div className={styles.textCont}>
           <p style={{ animation: mouseClicked ? "flash 2s infinite alternate" : "none" }} className={styles.squareText}>{text}</p>
