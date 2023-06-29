@@ -206,9 +206,10 @@ export default function StyleSquare({
         style={{
           translate: `${position}px`,
           transition: `translate ${ballAnimTime}ms, scale 10s`,
-          scale: mouseClicked ? `3` : `1`,
-          backgroundColor: mouseClicked ? `blue` : `#000`,
-          animation: mouseClicked ? `colorShow 4s infinite` : `none`
+          scale: mouseClicked ? `4` : audioLink!.length > 0 ? 1 : 1,
+          top: "50%",
+          backgroundColor: mouseClicked ? `blue` : audioLink!.length > 0 ? "#ffa200" : "black",
+          animation: mouseClicked ? `colorShow 4s infinite linear` : `none`
         }}
         className={styles.ball}
         ref={ball}
@@ -220,13 +221,14 @@ export default function StyleSquare({
           gravity={gravity!}
           shapes={shapes!}
           parentHeight={parentBoxHeight}
+          musicPlaying={mouseClicked}
         />
       ))}
 
-      <div className={styles.contentCont} style={{ "--uniqueAudioSeen": audioLink ? "#F24405" : "none" } as React.CSSProperties}>
+      <div className={styles.contentCont}>
 
         <div className={styles.textCont}>
-          <p style={{ animation: mouseClicked ? "flash 2s infinite alternate" : "none" }} className={styles.squareText}>{text}</p>
+          <p className={styles.squareText}>{text}</p>
 
           <p className={styles.displayName}>{username} -{" "}
 
@@ -270,10 +272,12 @@ function Droplet({
   gravity,
   shapes,
   parentHeight,
+  musicPlaying
 }: {
   gravity: number;
   shapes: string;
   parentHeight: number;
+  musicPlaying: boolean
 }) {
   const [rndX, rndXSet] = useState(Math.random() * 101);
   const [rndShapeSelect] = useState(Math.floor(Math.random() * 2));
@@ -322,6 +326,7 @@ function Droplet({
         transition: `translate ${transitionVal}ms linear`,
         width: `${seenWidth}px`,
         rotate: `${seenRotation}deg`,
+        filter: musicPlaying ? `invert(100%)` : `none`
       }}
       className={styles.droplet}
       ref={dropletRef}
