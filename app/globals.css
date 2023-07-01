@@ -116,6 +116,20 @@ body {
 }
 
 
+body::-webkit-scrollbar {
+    width: .5rem;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: black;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: purple;
+}
+
+
+
 @keyframes flash {
     to {
         color: black;
@@ -128,4 +142,15 @@ body {
         filter: hue-rotate(360deg);
     }
 
+}
+
+.mainBttn {
+    padding: .5rem 1rem;
+    background-color: purple;
+    cursor: pointer;
+    transition: filter 400ms;
+}
+
+.mainBttn:hover {
+    filter: brightness(110%);
 }

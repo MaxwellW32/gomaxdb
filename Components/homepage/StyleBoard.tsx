@@ -7,7 +7,7 @@ import ReactPlayer from "react-player/youtube";
 import type { baseReadData } from "@/app/page";
 import Moment from 'react-moment';
 
-export default function StyleSquare({
+export default function StyleBoard({
   id,
   speed,
   gravity,
@@ -20,14 +20,15 @@ export default function StyleSquare({
   imgLinks,
   ytLinks,
   createdAt,
-  deleteSpecific,
-}: baseReadData & { deleteSpecific: (input: string) => void }) {
+  deleteBoard: deleteBoard,
+}: baseReadData & { deleteBoard: (input: string) => void }) {
   const seenColors = colors!.split("|");
   const mainBoxRef = useRef<HTMLDivElement>(null!);
   const ball = useRef<HTMLDivElement>(null!);
 
   const [position, setPosition] = useState(0);
-  const ballAnimTime = speed;
+  const ballAnimTime = speed! + 500;
+  gravity! += 500
 
   const [seenImgLinks, seenImgLinksSet] = useState<string[] | undefined>(() => {
     if (imgLinks!.length > 0) {
@@ -94,7 +95,7 @@ export default function StyleSquare({
     parentBoxHeightSet(mainBoxRef.current.offsetHeight);
   }, []);
 
-  const [currentText, currentTextSet] = useState("");
+  const [statsText, statsTextSet] = useState("");
 
   const [mouseHovering, mouseHoveringSet] = useState(false);
 
@@ -134,7 +135,7 @@ export default function StyleSquare({
 
     if (mouseHovering && adminSignin) {
       myInterv = setInterval(() => {
-        currentTextSet(newArr[arrPos]);
+        statsTextSet(newArr[arrPos]);
         arrPos++;
         if (arrPos > newArr.length - 1) {
           arrPos = 0;
@@ -143,7 +144,7 @@ export default function StyleSquare({
     }
 
     return () => {
-      currentTextSet("");
+      statsTextSet("");
 
       return clearInterval(myInterv);
     };
@@ -157,7 +158,10 @@ export default function StyleSquare({
     <div
       onMouseEnter={() => mouseHoveringSet(true)}
       onMouseLeave={() => mouseHoveringSet(false)}
-      onMouseDown={() => mouseClickedSet((prev) => !prev)}
+      onClick={() => {
+
+        mouseClickedSet((prev) => !prev)
+      }}
       style={{
         background: `linear-gradient(${angle}deg, ${seenColors[0]}, ${seenColors[1]})`,
         transition: "all 2s"
@@ -171,15 +175,16 @@ export default function StyleSquare({
           display: !shouldDisa ? "block" : "none",
           opacity: mouseHovering ? "1" : "0",
         }}
-        onClick={(e) => {
-          e.stopPropagation()
-          deleteSpecific(id!);
-        }}
+
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="1em"
           viewBox="0 0 512 512"
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteBoard(id!);
+          }}
         >
           <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
         </svg>
@@ -204,9 +209,9 @@ export default function StyleSquare({
 
       <div
         style={{
-          translate: `${position}px`,
+          translate: `${position}px -50%`,
           transition: `translate ${ballAnimTime}ms, scale 10s`,
-          scale: mouseClicked ? `4` : audioLink!.length > 0 ? 1 : 1,
+          scale: mouseClicked ? `4` : audioLink!.length > 0 ? 2 : 1,
           top: "50%",
           backgroundColor: mouseClicked ? `blue` : audioLink!.length > 0 ? "#ffa200" : "black",
           animation: mouseClicked ? `colorShow 4s infinite linear` : `none`
@@ -239,7 +244,7 @@ export default function StyleSquare({
             style={{ display: mouseHovering && adminSignin ? "block" : "none" }}
             className={styles.squareTextStats}
           >
-            {currentText}
+            {statsText}
           </p>
         </div>
 

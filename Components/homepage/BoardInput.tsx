@@ -5,13 +5,11 @@ import startShapes from "@/utilities/StartShapes";
 import type { baseReadData } from "@/app/page";
 import ReactPlayer from "react-player/youtube";
 
-export default function RecordInput({
-  newRecord,
+export default function BoardInput({
+  newBoard,
 }: {
-  newRecord: (input: baseReadData) => Promise<void>;
+  newBoard: (input: baseReadData) => Promise<void>;
 }) {
-  const labelRef = useRef<HTMLLabelElement>(null!);
-  const [showMore, showMoreSet] = useState(false);
   const [usingCustomSett, usingCustomSettSet] = useState(false);
 
   const allDataInitialValue: baseReadData = {
@@ -34,6 +32,7 @@ export default function RecordInput({
   const [singleImageInput, singleImageInputSet] = useState("");
   const [singleYtInput, singleYtInputSet] = useState("");
 
+  const [showInptForm, showInptFormSet] = useState(false)
 
   function saveImgArr(input: string) {
     if (input.length > 0) {
@@ -77,7 +76,7 @@ export default function RecordInput({
     //validation test
     const newObj = { ...allData };
 
-    newRecord(newObj);
+    newBoard(newObj);
   }
 
   const [colorComb, colorCombSet] = useState<(undefined | string)[]>([undefined, undefined]);
@@ -105,151 +104,176 @@ export default function RecordInput({
       allDataSet((prevData) => {
         return { ...prevData, username: name };
       });
-      labelRef.current.innerHTML = `Signed in as ${name}`;
     }
   }, []);
 
+
   return (
-    <div className={styles.recInputMainDiv}>
-      <div className={styles.InputCont}>
-        <label ref={labelRef}>Send a message to sign in</label>
+    <div className={styles.mainContDiv}>
+      <div
+        className={styles.showformbttn}
+        onClick={() => {
+          showInptFormSet(prev => !prev)
+        }}>
+        <p>Something to add?</p>
 
-        {showMore && (
-          <>
-            <input
-              placeholder="Enter Username "
-              onChange={(e) => {
-                const name = e.target.value;
-
-                allDataSet((prevData) => {
-                  return { ...prevData, username: name };
-                });
-              }}
-              value={allData.username}
-            />
-
-
-            <label htmlFor="recordText">Text</label>
-            <input
-              placeholder="anything to say? "
-              id="recordText"
-              onChange={(e) => {
-                const text = e.target.value;
-                allDataSet((prevData) => {
-                  return { ...prevData, text: text };
-                });
-              }}
-              value={allData.text}
-            />
-
-
-            <label htmlFor="audioLink">Audio Link</label>
-            <input
-              placeholder="yt links only"
-              id="audioLink"
-              onChange={(e) => {
-                allDataSet((prevData) => {
-                  return { ...prevData, audioLink: e.target.value };
-                });
-              }}
-              value={allData.audioLink}
-            />
-
-            {allData.audioLink &&
-              <PreviewAudio input={allData.audioLink} />
-            }
-
-
-
-            <label htmlFor="ytLink">Youtube Vid</label>
-            <input
-              placeholder="Something I should watch? "
-              id="ytLink"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  saveYtArr(singleYtInput)
-                }
-              }}
-              onBlur={() => {
-                saveYtArr(singleYtInput)
-              }}
-              onChange={(e) => {
-                singleYtInputSet(e.target.value)
-              }}
-              value={singleYtInput}
-            />
-            {allData.ytLinks &&
-
-              <div className={styles.prevYtCont}>
-                {JSON.parse(allData.ytLinks).map((eachLink: string, index: number) => (
-                  <PreviewYtVids key={index} input={eachLink} />
-                ))}
-              </div>
-            }
-
-
-            <label htmlFor="imgLink">Images</label>
-
-            <input
-              placeholder="Show me something "
-              id="imgLink"
-              onChange={(e) => {
-                singleImageInputSet(e.target.value)
-              }}
-              value={singleImageInput}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  saveImgArr(singleImageInput)
-                }
-              }}
-              onBlur={() => {
-                saveImgArr(singleImageInput)
-              }}
-            />
-
-            {allData.imgLinks &&
-              <div className={styles.prevImageCont}>
-                {JSON.parse(allData.imgLinks).map((eachLink: string, index: number) => (
-                  <PreviewImages key={index} input={eachLink} />
-                ))}
-              </div>
-            }
-
-
-          </>
-        )}
-
-        <p
-          style={{ textAlign: "center" }}
-          onClick={() => {
-            showMoreSet((prev) => !prev);
-          }}
-        >
-          {!showMore ? "show more" : "show less"}
-        </p>
-
-
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M151.6 469.6C145.5 476.2 137 480 128 480s-17.5-3.8-23.6-10.4l-88-96c-11.9-13-11.1-33.3 2-45.2s33.3-11.1 45.2 2L96 365.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V365.7l32.4-35.4c11.9-13 32.2-13.9 45.2-2s13.9 32.2 2 45.2l-88 96zM320 32h32c17.7 0 32 14.3 32 32s-14.3 32-32 32H320c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H320c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H320c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128H544c17.7 0 32 14.3 32 32s-14.3 32-32 32H320c-17.7 0-32-14.3-32-32s14.3-32 32-32z" /></svg>
       </div>
 
-      <div style={{ display: showMore ? "grid" : "none" }} className={styles.bttnCont}>
-        <label
-          style={{
-            backgroundColor: usingCustomSett ? "aqua" : "white",
-          }}
-          className={styles.customButton}
-          onClick={() => {
-            usingCustomSettSet((prev) => !prev);
-          }}
-        >
-          Customize
-        </label>
+      <div style={{ translate: showInptForm ? "0 0" : "-100% 0" }} className={styles.inputCont}>
 
+        <svg
+          onClick={() => {
+            showInptFormSet(prev => !prev)
+          }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
+
+        {allData.username.length > 0 ? (
+          <h4>Signed in as <span>{allData.username}</span></h4>
+        ) : (
+          <h4>Send a message to sign in</h4>
+        )}
+
+        <label htmlFor="usernameInput">Username</label>
+        <input
+          id="usernameInput"
+          placeholder="Enter Username "
+          onChange={(e) => {
+            const name = e.target.value;
+
+            allDataSet((prevData) => {
+              return { ...prevData, username: name };
+            });
+          }}
+          value={allData.username}
+        />
+
+
+        <label htmlFor="recordText">Text</label>
+        <input
+          id="recordText"
+          placeholder="Share a message"
+          onChange={(e) => {
+            const text = e.target.value;
+            allDataSet((prevData) => {
+              return { ...prevData, text: text };
+            });
+          }}
+          value={allData.text}
+        />
+
+
+        <label htmlFor="audioLink">Audio Link</label>
+        <input
+          id="audioLink"
+          placeholder="Play youtube music"
+          onChange={(e) => {
+            allDataSet((prevData) => {
+              return { ...prevData, audioLink: e.target.value };
+            });
+          }}
+          value={allData.audioLink}
+        />
+
+        {allData.audioLink &&
+          <PreviewAudio input={allData.audioLink} />
+        }
+
+
+        <label htmlFor="ytLink">Youtube Vid</label>
+        <input
+          id="ytLink"
+          placeholder="Share videos"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              saveYtArr(singleYtInput)
+            }
+          }}
+          onBlur={() => {
+            saveYtArr(singleYtInput)
+          }}
+          onChange={(e) => {
+            singleYtInputSet(e.target.value)
+          }}
+          value={singleYtInput}
+        />
+
+        {allData.ytLinks &&
+          <div className={styles.prevYtCont}>
+            {JSON.parse(allData.ytLinks).map((eachLink: string, index: number) => (
+              <PreviewYtVids key={index} input={eachLink} />
+            ))}
+          </div>
+        }
+
+
+        <label htmlFor="imgLink">Images</label>
+        <input
+          id="imgLink"
+          placeholder="Show the world anything"
+          onChange={(e) => {
+            singleImageInputSet(e.target.value)
+          }}
+          value={singleImageInput}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              saveImgArr(singleImageInput)
+            }
+          }}
+          onBlur={() => {
+            saveImgArr(singleImageInput)
+          }}
+        />
+
+        {allData.imgLinks &&
+          <div className={styles.prevImageCont}>
+            {JSON.parse(allData.imgLinks).map((eachLink: string, index: number) => (
+              <PreviewImages key={index} input={eachLink} />
+            ))}
+          </div>
+        }
+
+        <div className={styles.bttnHolder}>
+          <button
+            style={{
+              backgroundColor: usingCustomSett ? "#002755" : "#0027559e",
+              opacity: usingCustomSett ? "1" : ".4",
+            }}
+            className="mainBttn"
+            onClick={() => {
+              usingCustomSettSet((prev) => !prev);
+            }}
+          >
+            Board Customization
+          </button>
+
+          <button
+            className="mainBttn"
+            disabled={!allData.text || allData.username.length < 1}
+            onClick={() => {
+              saveUsername(allData.username);
+              submit();
+              setTimeout(() => {
+                //reset to initial
+                allDataSet((prevData => {
+                  return { ...allDataInitialValue, username: prevData.username }
+                }));
+
+                colorCombSet([undefined, undefined])
+              }, 500);
+              showInptFormSet(prev => !prev)
+            }}
+          >
+            Post
+          </button>
+        </div>
+
+        {/* usingCustomSett */}
         {usingCustomSett && (
           <div className={styles.cstmSettings}>
             <label htmlFor="gravAmt">Gravity</label>
             <input
-              placeholder="Smaller the stronger"
               id="gravAmt"
+              placeholder="Smaller the stronger"
               type="number"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
@@ -270,8 +294,8 @@ export default function RecordInput({
 
             <label htmlFor="speedAmt">Speed</label>
             <input
-              placeholder="Smaller the faster"
               id="speedAmt"
+              placeholder="Smaller the faster"
               type="number"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
@@ -290,11 +314,11 @@ export default function RecordInput({
               value={allData.speed ? allData.speed : undefined}
             />
 
-            <label htmlFor="colorName1">Colors - # or name</label>
+            <label htmlFor="colorName1">Colors - #Hex or Name</label>
             <div className={styles.colorInputCont}>
               <input
-                placeholder="Enter first Color"
                 id="colorName1"
+                placeholder="Enter first Color"
                 type="text"
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
@@ -307,8 +331,8 @@ export default function RecordInput({
               />
 
               <input
-                placeholder="Enter second Color"
                 id="colorName2"
+                placeholder="Enter second Color"
                 type="text"
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
@@ -323,8 +347,8 @@ export default function RecordInput({
 
             <label htmlFor="angleAmt">Angle</label>
             <input
-              placeholder="Angle your background"
               id="angleAmt"
+              placeholder="Angle your background"
               type="number"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
@@ -345,8 +369,8 @@ export default function RecordInput({
 
             <label htmlFor="shapesName">Shapes</label>
             <input
-              placeholder="Enter two Letters A - P"
               id="shapesName"
+              placeholder="Enter two Letters A - Z"
               type="text"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
@@ -378,31 +402,14 @@ export default function RecordInput({
           </div>
         )}
 
-        <button
-          disabled={!allData.text || allData.username.length < 1}
-          onClick={() => {
-            saveUsername(allData.username);
-            submit();
-            labelRef.current.innerHTML = `Signed in as ${allData.username}`;
-            setTimeout(() => {
-              //reset to initial
-              allDataSet({
-                ...allDataInitialValue,
-                username: allData.username,
-              });
-
-              colorCombSet([undefined, undefined])
-            }, 500);
-          }}
-        >
-          new record
-        </button>
-      </div>
-
+      </div >
 
     </div>
+
   );
 }
+
+
 function PreviewAudio({ input }: { input: string }) {
   const widthVal = 150
   const aspec = 9 / 16

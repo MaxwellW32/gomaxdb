@@ -1,3 +1,3 @@
-const startShapes = "ABCDEFGHIJKLMNOP";
+const startShapes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export default startShapes;

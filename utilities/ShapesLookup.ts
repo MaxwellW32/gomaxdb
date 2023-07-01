@@ -21,6 +21,16 @@ export const shapesLookup: { [key: string]: shapesLookup } = {
   N: { width: 35, rotation: 132, url: "" },
   O: { width: 24, rotation: 218, url: "" },
   P: { width: 22, rotation: 283, url: "" },
+  Q : {width: 46, rotation: 359, url: ''}, 
+  R : {width: 11, rotation: 31, url: ''}, 
+  S : {width: 18, rotation: 117, url: ''}, 
+  T : {width: 17, rotation: 125, url: ''}, 
+  U : {width: 20, rotation: 54, url: ''}, 
+  V : {width: 39, rotation: 203, url: ''}, 
+  W : {width: 48, rotation: 11, url: ''}, 
+  X : {width: 19, rotation: 147, url: ''}, 
+  Y : {width: 12, rotation: 172, url: ''}, 
+  Z : {width: 44, rotation: 192, url: ''}, 
 };
 export default function useShapesLookup(letter: string) {
   return shapesLookup[letter];
@@ -43,7 +53,7 @@ function createRandomValues() {
   for (const key in newObj) {
     fullString += `${key} : {width: ${newObj[key].width}, rotation: ${newObj[key].rotation}, url: '${newObj[key].url}'}, \n`;
   }
-  console.log(shapesLookup);
-  console.log(newObj);
+  // console.log(shapesLookup);
+  // console.log(newObj);
   console.log(fullString);
 }

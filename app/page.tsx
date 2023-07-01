@@ -2,8 +2,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import StyleSquare from "@/Components/homepage/StyleSquare";
-import RecordInput from "@/Components/homepage/RecordInput";
+import StyleBoard from "@/Components/homepage/StyleBoard";
+import BoardInput from "@/Components/homepage/BoardInput";
 import startShapes from "@/utilities/StartShapes";
 
 const prisma = new PrismaClient();
@@ -39,11 +39,12 @@ export default async function Home() {
         },
       }
     );
+
   } catch (error) {
     console.log("couldnt fetch", error);
   }
 
-  async function newRecord(input: baseReadData) {
+  async function newBoard(input: baseReadData) {
     "use server";
 
     //check if each item exists
@@ -57,9 +58,9 @@ export default async function Home() {
           return colors[Math.floor(Math.random() * colors.length)]
         },
         angle: Math.floor(Math.random() * 361),
-        gravity: Math.floor(Math.random() * 11) * 1000 + 500,
+        gravity: Math.floor(Math.random() * 11) * 1000,
         shapes: startShapes[Math.floor(Math.random() * startShapes.length)] + startShapes[Math.floor(Math.random() * startShapes.length)],
-        speed: Math.floor(Math.random() * 6000) + 500
+        speed: Math.floor(Math.random() * 6001)
       }
 
       const inputCols = input.colors!.split("|")
@@ -122,7 +123,7 @@ export default async function Home() {
     // }
   }
 
-  async function deleteSpecific(input: string) {
+  async function deleteBoard(input: string) {
     "use server";
 
     const seenId = input;
@@ -140,15 +141,15 @@ export default async function Home() {
     <main className={styles.mainDiv}>
       <h1>Community Board</h1>
 
-      <RecordInput newRecord={newRecord} />
+      <BoardInput newBoard={newBoard} />
 
 
-      <div className={styles.squareHolder}>
-        {allInfo.map((eachRecord) => (
-          <StyleSquare
-            key={eachRecord.id}
-            {...eachRecord}
-            deleteSpecific={deleteSpecific}
+      <div className={styles.BoardsHolder}>
+        {allInfo.map((eachBoard) => (
+          <StyleBoard
+            key={eachBoard.id}
+            {...eachBoard}
+            deleteBoard={deleteBoard}
           />
         ))}
       </div>
