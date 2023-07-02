@@ -45,7 +45,7 @@ export default function BoardInput({
         }
 
 
-        return { ...prevData, imgLinks: JSON.stringify([...pastSeenImgArr, input]) }
+        return { ...prevData, imgLinks: JSON.stringify([input, ...pastSeenImgArr]) }
       })
 
       singleImageInputSet("")
@@ -57,14 +57,14 @@ export default function BoardInput({
     if (input.length > 0) {
 
       allDataSet(prevData => {
-        let pastSeenImgArr: string[] = []
+        let pastSeenYtArr: string[] = []
 
         if (prevData.ytLinks) {
-          pastSeenImgArr = JSON.parse(prevData.ytLinks!)
+          pastSeenYtArr = JSON.parse(prevData.ytLinks!)
         }
 
 
-        return { ...prevData, ytLinks: JSON.stringify([...pastSeenImgArr, input]) }
+        return { ...prevData, ytLinks: JSON.stringify([input, ...pastSeenYtArr]) }
       })
 
       singleYtInputSet("")
@@ -106,7 +106,6 @@ export default function BoardInput({
       });
     }
   }, []);
-
 
   return (
     <div className={styles.mainContDiv}>
@@ -160,10 +159,8 @@ export default function BoardInput({
             });
           }}
           onInput={() => {
-
             recordTextTA.current.style.height = 'auto';
             recordTextTA.current.style.height = recordTextTA.current.scrollHeight + 'px';
-
           }}
           value={allData.text}
         />
@@ -182,7 +179,17 @@ export default function BoardInput({
         />
 
         {allData.audioLink &&
-          <PreviewAudio input={allData.audioLink} />
+          <div className={styles.prevAudioCont}>
+            <svg
+              className={styles.previewContCloseBttn}
+              onClick={() => {
+                allDataSet(prevData => {
+                  return { ...prevData, audioLink: "" }
+                })
+              }}
+              xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
+            <PreviewAudio input={allData.audioLink} />
+          </div>
         }
 
 
@@ -207,7 +214,25 @@ export default function BoardInput({
         {allData.ytLinks &&
           <div className={styles.prevYtCont}>
             {JSON.parse(allData.ytLinks).map((eachLink: string, index: number) => (
-              <PreviewYtVids key={index} input={eachLink} />
+              <div className={styles.prevYtIndivCont}>
+                <svg
+                  className={styles.previewContCloseBttn}
+                  onClick={() => {
+
+                    allDataSet(prevData => {
+                      let pastSeenYtArr: string[] = []
+                      pastSeenYtArr = JSON.parse(prevData.ytLinks!)
+
+                      let newYtArr = pastSeenYtArr.filter((val, count) => {
+                        return count !== index;
+                      });
+                      return { ...prevData, ytLinks: newYtArr.length > 0 ? JSON.stringify([...newYtArr]) : undefined }
+                    })
+                  }}
+                  xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
+
+                <PreviewYtVids key={index} input={eachLink} />
+              </div>
             ))}
           </div>
         }
@@ -234,7 +259,27 @@ export default function BoardInput({
         {allData.imgLinks &&
           <div className={styles.prevImageCont}>
             {JSON.parse(allData.imgLinks).map((eachLink: string, index: number) => (
-              <PreviewImages key={index} input={eachLink} />
+              <div className={styles.prevImgIndivCont}>
+                <svg
+                  className={styles.previewContCloseBttn}
+                  onClick={() => {
+
+                    allDataSet(prevData => {
+                      let pastSeenImgArr: string[] = []
+                      pastSeenImgArr = JSON.parse(prevData.imgLinks!)
+
+                      let newImgArr = pastSeenImgArr.filter((val, count) => {
+                        return count !== index;
+                      });
+                      return { ...prevData, imgLinks: newImgArr.length > 0 ? JSON.stringify([...newImgArr]) : undefined }
+                    })
+                  }}
+                  xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
+
+
+
+                <PreviewImages key={index} input={eachLink} />
+              </div>
             ))}
           </div>
         }
@@ -417,7 +462,7 @@ export default function BoardInput({
 
 
 function PreviewAudio({ input }: { input: string }) {
-  const widthVal = 150
+  const widthVal = 100
   const aspec = 9 / 16
   const height = widthVal * aspec
 
@@ -425,7 +470,7 @@ function PreviewAudio({ input }: { input: string }) {
     <ReactPlayer
       width={widthVal}
       height={height}
-      playing={true}
+      playing={false}
       url={input}
     />
   )

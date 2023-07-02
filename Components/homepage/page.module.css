@@ -219,6 +219,26 @@
 
 
 
+.prevAudioCont {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    justify-self: flex-start;
+
+}
+
+.previewContCloseBttn {
+    fill: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transition: all 400ms;
+}
+
+.previewContCloseBttn:hover {
+    fill: rgb(255, 145, 145);
+}
+
 .prevYtCont {
     display: grid;
     grid-auto-flow: column;
@@ -226,12 +246,23 @@
     overflow-x: scroll;
     column-gap: 1rem;
     padding: .5rem;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    height: min-content;
+
 }
 
 .prevYtCont::-webkit-scrollbar {
     display: none;
 }
 
+.prevYtIndivCont {
+    position: relative;
+}
+
+.prevImgIndivCont {
+    position: relative;
+}
 
 .prevImageCont {
     display: grid;
@@ -240,6 +271,9 @@
     overflow-x: scroll;
     column-gap: 1rem;
     padding: .5rem;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    height: min-content;
 }
 
 .prevImageCont::-webkit-scrollbar {

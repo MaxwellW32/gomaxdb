@@ -51,11 +51,23 @@ export default async function Home() {
     //if they dont exist make rnd data for them
 
     function addRndData(input: baseReadData) {
-      const colors = ["red", "blue", "yellow", "green", "purple", "orange", "pink"];
 
       const rndData = {
         singleColor: () => {
-          return colors[Math.floor(Math.random() * colors.length)]
+          // Generate random RGB values
+          let r = Math.floor(Math.random() * 256);
+          let g = Math.floor(Math.random() * 256);
+          let b = Math.floor(Math.random() * 256);
+
+          // Convert RGB to hexadecimal
+          let hexR = r.toString(16).padStart(2, '0');
+          let hexG = g.toString(16).padStart(2, '0');
+          let hexB = b.toString(16).padStart(2, '0');
+
+          // Concatenate hexadecimal values
+          let hexColor = '#' + hexR + hexG + hexB;
+
+          return hexColor;
         },
         angle: Math.floor(Math.random() * 361),
         gravity: Math.floor(Math.random() * 11) * 1000,
@@ -77,7 +89,7 @@ export default async function Home() {
 
       //add em together
 
-      if (!input.angle) {
+      if (input.angle === undefined) {
         input.angle = rndData.angle
       }
 
