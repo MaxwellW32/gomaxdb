@@ -6,8 +6,9 @@ import startShapes from "@/utilities/StartShapes";
 import ReactPlayer from "react-player/youtube";
 import type { baseReadData } from "@/app/page";
 import Moment from 'react-moment';
+import YoutubeDefaultList from "@/utilities/YoutubeDefaultList";
 
-export default function StyleBoard({
+export default function Board({
   id,
   speed,
   gravity,
@@ -150,8 +151,9 @@ export default function StyleBoard({
     };
   }, [mouseHovering, adminSignin]);
 
-  const defaultAudio = "https://www.youtube.com/watch?v=l9LNIUNa7x4&ab_channel=Tatsumi"
-
+  const [defaultAudio,] = useState<string>(() => {
+    return YoutubeDefaultList[Math.floor(Math.random() * YoutubeDefaultList.length)]
+  })
   const [mouseClicked, mouseClickedSet] = useState(false);
 
   return (

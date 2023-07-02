@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import StyleBoard from "@/Components/homepage/StyleBoard";
+import Board from "@/Components/homepage/Board";
 import BoardInput from "@/Components/homepage/BoardInput";
 import startShapes from "@/utilities/StartShapes";
 
@@ -81,17 +81,18 @@ export default async function Home() {
         input.angle = rndData.angle
       }
 
-      if (!input.gravity) {
+      if (input.gravity === undefined) {
         input.gravity = rndData.gravity
+      }
+
+      if (input.speed === undefined) {
+        input.speed = rndData.speed
       }
 
       if (!input.shapes) {
         input.shapes = rndData.shapes
       }
 
-      if (!input.speed) {
-        input.speed = rndData.speed
-      }
     }
 
     addRndData(input)
@@ -146,7 +147,7 @@ export default async function Home() {
 
       <div className={styles.BoardsHolder}>
         {allInfo.map((eachBoard) => (
-          <StyleBoard
+          <Board
             key={eachBoard.id}
             {...eachBoard}
             deleteBoard={deleteBoard}

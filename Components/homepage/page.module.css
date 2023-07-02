@@ -72,6 +72,7 @@
 .squareText {
     font-size: 2rem;
     font-weight: bold;
+    white-space: pre-line;
 }
 
 
@@ -133,6 +134,10 @@
 
 }
 
+.inputCont::-webkit-scrollbar {
+    display: none;
+}
+
 .inputCont>svg {
     /* close button */
     fill: #fff;
@@ -156,6 +161,20 @@
 
 .inputCont>h4>span {
     color: gold;
+}
+
+.inputCont>textarea {
+    padding: .5rem;
+    opacity: .8;
+    background-color: rgba(255, 255, 255, 0.05);
+    margin-bottom: 2rem;
+    border-radius: 5px;
+    resize: none;
+    max-height: 10rem;
+}
+
+.inputCont>textarea::-webkit-scrollbar {
+    display: none;
 }
 
 .inputCont>input {

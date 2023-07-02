@@ -11,7 +11,7 @@ export default function BoardInput({
   newBoard: (input: baseReadData) => Promise<void>;
 }) {
   const [usingCustomSett, usingCustomSettSet] = useState(false);
-
+  const recordTextTA = useRef<HTMLTextAreaElement>(null!)
   const allDataInitialValue: baseReadData = {
     id: undefined,
     createdAt: undefined,
@@ -149,7 +149,8 @@ export default function BoardInput({
 
 
         <label htmlFor="recordText">Text</label>
-        <input
+        <textarea
+          ref={recordTextTA}
           id="recordText"
           placeholder="Share a message"
           onChange={(e) => {
@@ -157,6 +158,12 @@ export default function BoardInput({
             allDataSet((prevData) => {
               return { ...prevData, text: text };
             });
+          }}
+          onInput={() => {
+
+            recordTextTA.current.style.height = 'auto';
+            recordTextTA.current.style.height = recordTextTA.current.scrollHeight + 'px';
+
           }}
           value={allData.text}
         />
@@ -267,7 +274,6 @@ export default function BoardInput({
           </button>
         </div>
 
-        {/* usingCustomSett */}
         {usingCustomSett && (
           <div className={styles.cstmSettings}>
             <label htmlFor="gravAmt">Gravity</label>
