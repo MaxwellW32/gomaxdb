@@ -19,9 +19,9 @@ model base {
   createdAt DateTime @default(now())
   speed     Int      @default(0)
   gravity   Int      @default(0)
+  angle     Int      @default(0)
   shapes    String   @default("BA")
   colors    String   @default("red|blue")
-  angle     Int      @default(0)
   audioLink String   @default("") @db.Text
   ytLinks   String   @default("") @db.Text
   imgLinks  String   @default("") @db.Text

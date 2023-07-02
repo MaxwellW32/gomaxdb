@@ -264,6 +264,19 @@
     position: relative;
 }
 
+.angleColCont {
+    position: relative;
+}
+
+.showAngleColor {
+    position: absolute;
+    height: 50%;
+    aspect-ratio: 1/1;
+    top: 0;
+    right: 0;
+    align-self: center;
+}
+
 .prevImageCont {
     display: grid;
     grid-auto-flow: column;

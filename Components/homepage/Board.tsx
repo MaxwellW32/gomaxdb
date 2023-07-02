@@ -28,19 +28,20 @@ export default function Board({
   const ball = useRef<HTMLDivElement>(null!);
 
   const [position, setPosition] = useState(0);
-  const ballAnimTime = speed! + 500;
   gravity! += 500
+  speed! += 500
+  const ballAnimTime = speed!;
 
   const [seenImgLinks, seenImgLinksSet] = useState<string[] | undefined>(() => {
-    if (imgLinks!.length > 0) {
-      return JSON.parse(imgLinks!)
+    if (imgLinks) {
+      return JSON.parse(imgLinks)
     } else {
       return undefined
     }
   })
 
   const [seenYtLinks, seenYtLinksSet] = useState<string[] | undefined>(() => {
-    if (ytLinks!.length > 0) {
+    if (ytLinks) {
       return JSON.parse(ytLinks!)
     } else {
       return undefined
@@ -117,7 +118,7 @@ export default function Board({
   }, [mouseHovering]);
 
   const adminSignin = latestSignInAs === "admin";
-  const canClick = username !== latestSignInAs || latestSignInAs.length < 1;
+  const canClick = username !== latestSignInAs || !latestSignInAs.length;
   const shouldDisa = adminSignin ? false : canClick;
 
   //display stats
@@ -202,7 +203,7 @@ export default function Board({
           loop={true}
           playing={mouseClicked}
           url={
-            audioLink!.length > 0
+            audioLink
               ? audioLink
               : defaultAudio
           }
@@ -213,9 +214,9 @@ export default function Board({
         style={{
           translate: `${position}px -50%`,
           transition: `translate ${ballAnimTime}ms, scale 10s`,
-          scale: mouseClicked ? `4` : audioLink!.length > 0 ? 2 : 1,
+          scale: mouseClicked ? 4 : audioLink ? 2 : 1,
           top: "50%",
-          backgroundColor: mouseClicked ? `blue` : audioLink!.length > 0 ? "#ffa200" : "black",
+          backgroundColor: mouseClicked ? `blue` : audioLink ? "#ffa200" : "black",
           animation: mouseClicked ? `colorShow 4s infinite linear` : `none`
         }}
         className={styles.ball}

@@ -20,11 +20,11 @@ export default function BoardInput({
     speed: undefined,
     gravity: undefined,
     shapes: undefined,
-    colors: undefined,
+    colors: "",
     angle: undefined,
-    audioLink: undefined,
-    ytLinks: undefined,
-    imgLinks: undefined,
+    audioLink: "",
+    ytLinks: "",
+    imgLinks: "",
   };
 
   const [allData, allDataSet] = useState({ ...allDataInitialValue });
@@ -35,13 +35,13 @@ export default function BoardInput({
   const [showInptForm, showInptFormSet] = useState(false)
 
   function saveImgArr(input: string) {
-    if (input.length > 0) {
+    if (input) {
 
       allDataSet(prevData => {
         let pastSeenImgArr: string[] = []
 
         if (prevData.imgLinks) {
-          pastSeenImgArr = JSON.parse(prevData.imgLinks!)
+          pastSeenImgArr = JSON.parse(prevData.imgLinks)
         }
 
 
@@ -54,7 +54,7 @@ export default function BoardInput({
   }
 
   function saveYtArr(input: string) {
-    if (input.length > 0) {
+    if (input) {
 
       allDataSet(prevData => {
         let pastSeenYtArr: string[] = []
@@ -79,10 +79,11 @@ export default function BoardInput({
     newBoard(newObj);
   }
 
-  const [colorComb, colorCombSet] = useState<(undefined | string)[]>([undefined, undefined]);
+  const [colorComb, colorCombSet] = useState<string[]>(["", ""]);
 
   //combine color combination into allData
   useEffect(() => {
+
     let newColor1 = colorComb[0] ? colorComb[0] : "undefined"
     let newColor2 = colorComb[1] ? colorComb[1] : "undefined";
 
@@ -91,7 +92,11 @@ export default function BoardInput({
     allDataSet((prevData) => {
       return { ...prevData, colors: newColor };
     });
+
   }, [colorComb]);
+
+  console.clear()
+  console.log(allData.gravity)
 
   function saveUsername(name: string) {
     //write to browser cookies
@@ -106,6 +111,7 @@ export default function BoardInput({
       });
     }
   }, []);
+
 
   return (
     <div className={styles.mainContDiv}>
@@ -184,7 +190,7 @@ export default function BoardInput({
               className={styles.previewContCloseBttn}
               onClick={() => {
                 allDataSet(prevData => {
-                  return { ...prevData, audioLink: "" }
+                  return { ...prevData, audioLink: allDataInitialValue.audioLink }
                 })
               }}
               xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
@@ -271,6 +277,7 @@ export default function BoardInput({
                       let newImgArr = pastSeenImgArr.filter((val, count) => {
                         return count !== index;
                       });
+
                       return { ...prevData, imgLinks: newImgArr.length > 0 ? JSON.stringify([...newImgArr]) : undefined }
                     })
                   }}
@@ -301,6 +308,7 @@ export default function BoardInput({
           <button
             className="mainBttn"
             disabled={!allData.text || allData.username.length < 1}
+            style={{ filter: allData.text && allData.username.length > 0 ? "brightness(100%)" : "brightness(40%)" }}
             onClick={() => {
               saveUsername(allData.username);
               submit();
@@ -310,9 +318,11 @@ export default function BoardInput({
                   return { ...allDataInitialValue, username: prevData.username }
                 }));
 
-                colorCombSet([undefined, undefined])
+                colorCombSet(["", ""])
+
               }, 500);
               showInptFormSet(prev => !prev)
+              usingCustomSettSet(false)
             }}
           >
             Post
@@ -328,19 +338,19 @@ export default function BoardInput({
               type="number"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
-                  let newGrav = parseInt(e.target.value);
+                  let newGrav: number | undefined = parseInt(e.target.value);
                   if (isNaN(newGrav)) {
-                    newGrav = 0;
+                    newGrav = undefined;
                   }
 
-                  if (newGrav > 10000) {
+                  if (newGrav! > 10000) {
                     return { ...prevSettings };
                   }
 
                   return { ...prevSettings, gravity: newGrav };
                 });
               }}
-              value={allData.gravity ? allData.gravity : undefined}
+              value={allData.gravity}
             />
 
             <label htmlFor="speedAmt">Speed</label>
@@ -371,6 +381,7 @@ export default function BoardInput({
                 id="colorName1"
                 placeholder="Enter first Color"
                 type="text"
+                style={{ borderRight: allData.colors && allData.colors!.split("|")[0] !== "undefined" ? `10px solid ${allData.colors!.split("|")[0]}` : "none" }}
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
                     prevColorArr[0] = e.target.value;
@@ -385,6 +396,7 @@ export default function BoardInput({
                 id="colorName2"
                 placeholder="Enter second Color"
                 type="text"
+                style={{ borderRight: allData.colors && allData.colors!.split("|")[1] !== "undefined" ? `10px solid ${allData.colors!.split("|")[1]}` : "none" }}
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
                     prevColorArr[1] = e.target.value;
@@ -397,26 +409,38 @@ export default function BoardInput({
             </div>
 
             <label htmlFor="angleAmt">Angle</label>
-            <input
-              id="angleAmt"
-              placeholder="Angle your background"
-              type="number"
-              onChange={(e) => {
-                allDataSet((prevSettings) => {
-                  let newAngle = parseInt(e.target.value);
-                  if (isNaN(newAngle)) {
-                    newAngle = 0;
-                  }
+            <div className={styles.angleColCont}>
+              <div className={styles.showAngleColor} style={{
 
-                  if (newAngle > 360) {
-                    return { ...prevSettings };
-                  }
+                background: `linear-gradient(${allData.angle}deg, 
+                  
+                ${allData.colors && allData.colors!.split("|")[0] !== "undefined" ? allData.colors!.split("|")[0] : "transparent"}, 
+              
+                ${allData.colors && allData.colors!.split("|")[1] !== "undefined" ? allData.colors!.split("|")[1] : "transparent"})`,
 
-                  return { ...prevSettings, angle: newAngle };
-                });
-              }}
-              value={allData.angle ? allData.angle : undefined}
-            />
+                transition: "all 2s"
+              }}></div>
+              <input
+                id="angleAmt"
+                placeholder="Angle your background"
+                type="number"
+                onChange={(e) => {
+                  allDataSet((prevSettings) => {
+                    let newAngle = parseInt(e.target.value);
+                    if (isNaN(newAngle)) {
+                      newAngle = 0;
+                    }
+
+                    if (newAngle > 360) {
+                      return { ...prevSettings };
+                    }
+
+                    return { ...prevSettings, angle: newAngle };
+                  });
+                }}
+                value={allData.angle ? allData.angle : undefined}
+              />
+            </div>
 
             <label htmlFor="shapesName">Shapes</label>
             <input
