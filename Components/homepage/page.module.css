@@ -172,6 +172,7 @@
     border-radius: 5px;
     resize: none;
     max-height: 10rem;
+    min-height: 2rem;
 }
 
 .inputCont>textarea::-webkit-scrollbar {
@@ -301,8 +302,21 @@
 }
 
 .bttnHolder {
-    justify-self: flex-end;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
 
+}
+
+
+
+.refreshButton {
+    fill: white;
+    width: 1rem;
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    left: 0;
 }
 
 .cstmSettings {
