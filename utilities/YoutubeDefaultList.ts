@@ -12,6 +12,8 @@ const YoutubeDefaultList = [
     "https://www.youtube.com/watch?v=hinf6VI4VtU&ab_channel=SweetGirl",
     "https://www.youtube.com/watch?v=xV2O-xUyNH8&ab_channel=PamelaD.Wilburn",
     "https://www.youtube.com/watch?v=zi2arMU_VMM&ab_channel=VOIQ",
+    "https://www.youtube.com/watch?v=zF5Ddo9JdpY&ab_channel=LeagueofLegends",
+    "https://www.youtube.com/watch?v=aR-KAldshAE&ab_channel=LeagueofLegends"
 ]
 
 export default YoutubeDefaultList
