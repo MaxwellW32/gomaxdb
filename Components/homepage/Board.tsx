@@ -233,13 +233,14 @@ export default function Board({
         style={{
           display: userTriedToDelete ? "flex" : "none",
           background: `linear-gradient(${angle! * -1}deg, ${seenColors[0]}, ${seenColors[1]})`,
-        }}>
+          "--customColor1": seenColors[0],
+          "--customColor2": seenColors[1],
+        } as React.CSSProperties}>
 
         <p>Are you sure you want to delete this Board?</p>
         <div>
           <button
             className="mainBttn"
-            style={{ backgroundColor: "black" }}
             onClick={(e) => {
               deleteBoard(id!);
               userTriedToDeleteSet(false)
@@ -249,8 +250,6 @@ export default function Board({
           >yes</button>
           <button
             className="mainBttn"
-            style={{ backgroundColor: "black" }}
-
             onClick={(e) => {
               userTriedToDeleteSet(false)
               e.stopPropagation()

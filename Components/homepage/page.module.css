@@ -258,6 +258,20 @@
     display: none;
 }
 
+.deleteConfirmation button {
+    background-color: #000;
+    border-radius: .2rem;
+}
+
+.deleteConfirmation button:hover {
+    scale: 1.05;
+    color: var(--customColor1)
+}
+
+.deleteConfirmation button:last-of-type:hover {
+    color: var(--customColor2)
+}
+
 .prevAudioCont {
     margin-top: -1rem;
     margin-bottom: 2rem;
