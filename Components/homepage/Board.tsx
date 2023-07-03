@@ -162,7 +162,6 @@ export default function Board({
     activeNoteSelectedSet(newObj)
   }
 
-  console.log(`${text} ${canBeDeleted ? "true" : "false"}`)
   return (
     <div
       onMouseEnter={() => mouseHoveringSet(true)}
