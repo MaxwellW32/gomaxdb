@@ -14,4 +14,5 @@ export const noteSelected = atom<baseReadData>({
     audioLink: "",
     ytLinks: "",
     imgLinks: "",
+    canBeDeleted: undefined
 })
