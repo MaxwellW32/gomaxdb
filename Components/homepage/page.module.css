@@ -252,6 +252,9 @@
     grid-auto-flow: row;
     gap: .3rem;
     overflow-y: scroll;
+    white-space: pre-line;
+    max-height: 300px;
+
 }
 
 .displayDeleteTextCont::-webkit-scrollbar {
