@@ -201,7 +201,7 @@ export default function Board({
           viewBox="0 0 512 512"
           onClick={(e) => {
             e.stopPropagation()
-            console.log(`tried deleting ${text.slice(0, 15)} can delete ${canBeDeleted ? "true" : "false"}`)
+            // console.log(`tried deleting ${text.slice(0, 15)} can delete ${canBeDeleted ? "true" : "false"}`)
             if (canBeDeleted) {
               userTriedToDeleteSet(true)
             } else {
