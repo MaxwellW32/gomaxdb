@@ -9,7 +9,7 @@ import { noteSelected } from "@/utilities/GlobalState";
 
 export default function BoardInput({
   newBoard,
-  updateBoard: updateBoard,
+  updateBoard,
 }: {
   newBoard: (input: baseReadData) => Promise<void>,
   updateBoard: (input: baseReadData) => void
@@ -67,7 +67,6 @@ export default function BoardInput({
           pastSeenYtArr = JSON.parse(prevData.ytLinks!)
         }
 
-
         return { ...prevData, ytLinks: JSON.stringify([input, ...pastSeenYtArr]) }
       })
 
@@ -88,8 +87,8 @@ export default function BoardInput({
   //combine color combination into allData
   useEffect(() => {
 
-    let newColor1 = colorComb[0] ? colorComb[0] : "undefined"
-    let newColor2 = colorComb[1] ? colorComb[1] : "undefined";
+    let newColor1 = colorComb[0]
+    let newColor2 = colorComb[1]
 
     let newColor = newColor1 + "|" + newColor2
 
@@ -121,6 +120,9 @@ export default function BoardInput({
       usingCustomSettSet(true)
       showInptFormSet(true)
       allDataSet({ ...activeNoteSelected })
+
+      const seenColors = activeNoteSelected.colors!.split("|")
+      colorCombSet([seenColors[0], seenColors[1]])
     }
 
   }, [activeNoteSelected])
@@ -150,7 +152,7 @@ export default function BoardInput({
             showInptFormSet(prev => !prev)
           }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"> <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" /></svg>
 
-        {allData.username.length > 0 ? (
+        {allData.username ? (
           <h4>Signed in as <span>{allData.username}</span></h4>
         ) : (
           <h4>Send a message to sign in</h4>
@@ -250,6 +252,7 @@ export default function BoardInput({
                       let newYtArr = pastSeenYtArr.filter((val, count) => {
                         return count !== index;
                       });
+
                       return { ...prevData, ytLinks: newYtArr.length > 0 ? JSON.stringify([...newYtArr]) : undefined }
                     })
                   }}
@@ -337,8 +340,8 @@ export default function BoardInput({
 
             <button
               className="mainBttn"
-              disabled={!allData.text || allData.username.length < 1}
-              style={{ filter: allData.text && allData.username.length > 0 ? "brightness(100%)" : "brightness(40%)" }}
+              disabled={!allData.text || !allData.username}
+              style={{ filter: allData.text && allData.username ? "brightness(100%)" : "brightness(40%)" }}
               onClick={() => {
                 saveUsername(allData.username);
                 submit();
@@ -357,12 +360,14 @@ export default function BoardInput({
 
             <button
               className="mainBttn"
-              disabled={!allData.text || allData.username.length < 1}
-              style={{ filter: allData.text && allData.username.length > 0 ? "brightness(100%)" : "brightness(40%)" }}
+              disabled={!allData.text || !allData.username}
+              style={{ filter: allData.text && allData.username ? "brightness(100%)" : "brightness(40%)" }}
               onClick={() => {
-                showInptFormSet(prev => !prev)
-                usingCustomSettSet(false)
                 updateBoard(allData)
+                showInptFormSet(prev => !prev)
+                resetToInitial()
+                usingCustomSettSet(false)
+                activeNoteSelectedSet(allDataInitialValue)
               }}
             >
               update
@@ -384,7 +389,11 @@ export default function BoardInput({
                     newGrav = undefined;
                   }
 
-                  if (newGrav! > 10000) {
+                  if (newGrav === undefined) {
+                    return { ...prevSettings, gravity: newGrav }
+                  }
+
+                  if (newGrav! > 100000) {
                     return { ...prevSettings };
                   }
 
@@ -401,19 +410,24 @@ export default function BoardInput({
               type="number"
               onChange={(e) => {
                 allDataSet((prevSettings) => {
-                  let newSpeed = parseInt(e.target.value);
+                  let newSpeed: number | undefined = parseInt(e.target.value);
                   if (isNaN(newSpeed)) {
-                    newSpeed = 0;
+                    newSpeed = undefined;
                   }
 
-                  if (newSpeed > 10000) {
+                  if (newSpeed === undefined) {
+                    return { ...prevSettings, speed: newSpeed }
+                  }
+
+                  if (newSpeed > 100000) {
                     return { ...prevSettings };
                   }
+
 
                   return { ...prevSettings, speed: newSpeed };
                 });
               }}
-              value={allData.speed ? allData.speed : undefined}
+              value={allData.speed}
             />
 
             <label htmlFor="colorName1">Colors - #Hex or Name</label>
@@ -422,7 +436,7 @@ export default function BoardInput({
                 id="colorName1"
                 placeholder="Enter first Color"
                 type="text"
-                style={{ borderRight: allData.colors && allData.colors!.split("|")[0] !== "undefined" ? `10px solid ${allData.colors!.split("|")[0]}` : "none" }}
+                style={{ borderRight: allData.colors && allData.colors!.split("|")[0] ? `10px solid ${allData.colors!.split("|")[0]}` : "none" }}
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
                     prevColorArr[0] = e.target.value;
@@ -437,7 +451,7 @@ export default function BoardInput({
                 id="colorName2"
                 placeholder="Enter second Color"
                 type="text"
-                style={{ borderRight: allData.colors && allData.colors!.split("|")[1] !== "undefined" ? `10px solid ${allData.colors!.split("|")[1]}` : "none" }}
+                style={{ borderRight: allData.colors && allData.colors!.split("|")[1] ? `10px solid ${allData.colors!.split("|")[1]}` : "none" }}
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
                     prevColorArr[1] = e.target.value;
@@ -455,9 +469,9 @@ export default function BoardInput({
 
                 background: `linear-gradient(${allData.angle}deg, 
                   
-                ${allData.colors && allData.colors!.split("|")[0] !== "undefined" ? allData.colors!.split("|")[0] : "transparent"}, 
+                ${allData.colors && allData.colors!.split("|")[0] ? allData.colors!.split("|")[0] : "transparent"}, 
               
-                ${allData.colors && allData.colors!.split("|")[1] !== "undefined" ? allData.colors!.split("|")[1] : "transparent"})`,
+                ${allData.colors && allData.colors!.split("|")[1] ? allData.colors!.split("|")[1] : "transparent"})`,
 
                 transition: "all 2s"
               }}></div>
@@ -467,19 +481,24 @@ export default function BoardInput({
                 type="number"
                 onChange={(e) => {
                   allDataSet((prevSettings) => {
-                    let newAngle = parseInt(e.target.value);
+                    let newAngle: number | undefined = parseInt(e.target.value);
+
                     if (isNaN(newAngle)) {
-                      newAngle = 0;
+                      newAngle = undefined;
                     }
 
-                    if (newAngle > 360) {
+                    if (newAngle === undefined) {
+                      return { ...prevSettings, angle: newAngle }
+                    }
+
+                    if (newAngle > 99999 || newAngle < -99999) {
                       return { ...prevSettings };
                     }
 
                     return { ...prevSettings, angle: newAngle };
                   });
                 }}
-                value={allData.angle ? allData.angle : undefined}
+                value={allData.angle}
               />
             </div>
 

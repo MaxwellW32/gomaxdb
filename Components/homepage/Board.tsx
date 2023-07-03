@@ -31,8 +31,7 @@ export default function Board({
   const ball = useRef<HTMLDivElement>(null!);
 
   const [position, setPosition] = useState(0);
-  gravity! += 500
-  speed! += 500
+
   const ballAnimTime = speed!;
 
   const [seenImgLinks, seenImgLinksSet] = useState<string[] | undefined>(() => {
@@ -106,6 +105,7 @@ export default function Board({
 
   const [latestSignInAs, latestSignInAsSet] = useState("");
 
+  const [userTriedToDelete, userTriedToDeleteSet] = useState(false)
   //latest sign in on mouse hover
   useEffect(() => {
     if (mouseHovering) {
@@ -221,12 +221,51 @@ export default function Board({
           viewBox="0 0 512 512"
           onClick={(e) => {
             e.stopPropagation()
-            deleteBoard(id!);
+            userTriedToDeleteSet(true)
           }}
         >
           <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
         </svg>
 
+
+      </div>
+      <div className={styles.deleteConfirmation}
+        style={{
+          display: userTriedToDelete ? "flex" : "none",
+          background: `linear-gradient(${angle! * -1}deg, ${seenColors[0]}, ${seenColors[1]})`,
+        }}>
+
+        <p>Are you sure you want to delete this Board?</p>
+        <div>
+          <button
+            className="mainBttn"
+            style={{ backgroundColor: "black" }}
+            onClick={(e) => {
+              deleteBoard(id!);
+              userTriedToDeleteSet(false)
+              e.stopPropagation()
+
+            }}
+          >yes</button>
+          <button
+            className="mainBttn"
+            style={{ backgroundColor: "black" }}
+
+            onClick={(e) => {
+              userTriedToDeleteSet(false)
+              e.stopPropagation()
+            }}
+          >no</button>
+        </div>
+        <div className={styles.displayDeleteTextCont}>
+          <p>Created by {username} - {" "}
+            <Moment fromNow>{createdAt}</Moment>
+          </p>
+          content seen:
+          <p>{text}</p>
+
+
+        </div>
       </div>
 
 
@@ -250,7 +289,7 @@ export default function Board({
       <div
         style={{
           translate: `${position}px -50%`,
-          transition: `translate ${ballAnimTime}ms, scale 10s`,
+          transition: `translate ${ballAnimTime + 500}ms, scale 10s`,
           scale: mouseClicked ? 4 : audioLink ? 2 : 1,
           top: "50%",
           backgroundColor: mouseClicked ? `blue` : audioLink ? "#ffa200" : "black",
@@ -263,7 +302,7 @@ export default function Board({
       {amountOfDroplets.map((eachItem) => (
         <Droplet
           key={eachItem}
-          gravity={gravity!}
+          gravity={gravity! + 500}
           shapes={shapes!}
           parentHeight={parentBoxHeight}
           musicPlaying={mouseClicked}
