@@ -29,11 +29,7 @@ export default function Board({
   { deleteBoard: (input: string, canDelete: boolean) => void }) {
   const seenColors = colors!.split("|");
   const mainBoxRef = useRef<HTMLDivElement>(null!);
-  const ball = useRef<HTMLDivElement>(null!);
 
-  const [position, setPosition] = useState(0);
-
-  const ballAnimTime = speed!;
 
   const [seenImgLinks, seenImgLinksSet] = useState<string[] | undefined>(() => {
     if (imgLinks) {
@@ -50,25 +46,6 @@ export default function Board({
       return undefined
     }
   })
-
-
-
-  //animate ball
-  useEffect(() => {
-    let atStart = true;
-
-    const animationId = setInterval(() => {
-      if (atStart) {
-        setPosition(mainBoxRef.current.offsetWidth - ball.current.offsetWidth);
-      } else {
-        setPosition(0);
-      }
-
-      atStart = !atStart;
-    }, ballAnimTime);
-
-    return () => clearInterval(animationId);
-  }, []);
 
   const [amountOfDroplets, amountOfDropletsSet] = useState<number[]>([]);
 
@@ -94,10 +71,10 @@ export default function Board({
     amountOfDropletsSet(newArr);
   }, []);
 
-  const [parentBoxHeight, parentBoxHeightSet] = useState(0);
+  const [parentBoxHeightWidth, parentBoxHeightWidthSet] = useState<number[]>([]);
 
   useEffect(() => {
-    parentBoxHeightSet(mainBoxRef.current.offsetHeight);
+    parentBoxHeightWidthSet([mainBoxRef.current.offsetHeight, mainBoxRef.current.offsetWidth]);
   }, []);
 
   const [statsText, statsTextSet] = useState("");
@@ -107,6 +84,7 @@ export default function Board({
   const [latestSignInAs, latestSignInAsSet] = useState("");
 
   const [userTriedToDelete, userTriedToDeleteSet] = useState(false)
+
   //latest sign in on mouse hover
   useEffect(() => {
     if (mouseHovering) {
@@ -184,6 +162,7 @@ export default function Board({
     activeNoteSelectedSet(newObj)
   }
 
+  console.log(`${text} ${canBeDeleted ? "true" : "false"}`)
   return (
     <div
       onMouseEnter={() => mouseHoveringSet(true)}
@@ -226,7 +205,7 @@ export default function Board({
             if (canBeDeleted) {
               userTriedToDeleteSet(true)
             } else {
-              alert("cannot delete special user =)")
+              alert("This person is special to me")
             }
           }}
         >
@@ -291,25 +270,17 @@ export default function Board({
         />
       </div>
 
-      <div
-        style={{
-          translate: `${position}px -50%`,
-          transition: `translate ${ballAnimTime + 500}ms, scale 10s`,
-          scale: mouseClicked ? 4 : audioLink ? 2 : 1,
-          top: "50%",
-          backgroundColor: mouseClicked ? `blue` : audioLink ? "#ffa200" : "black",
-          animation: mouseClicked ? `colorShow 4s infinite linear` : `none`
-        }}
-        className={styles.ball}
-        ref={ball}
-      ></div>
+      <Ball speed={speed!} mouseClicked={mouseClicked} audioLink={audioLink!}
+        parentWidth={parentBoxHeightWidth[1]}
+      />
+
 
       {amountOfDroplets.map((eachItem) => (
         <Droplet
           key={eachItem}
           gravity={gravity! + 500}
           shapes={shapes!}
-          parentHeight={parentBoxHeight}
+          parentHeight={parentBoxHeightWidth[0]}
           musicPlaying={mouseClicked}
         />
       ))}
@@ -427,4 +398,44 @@ function Droplet({
   );
 }
 
+
+function Ball({ speed, mouseClicked, audioLink, parentWidth }: { speed: number, mouseClicked: boolean, audioLink: string, parentWidth: number }) {
+  const ball = useRef<HTMLDivElement>(null!);
+
+  const [position, setPosition] = useState(0);
+
+  const ballAnimTime = speed! + 500;
+
+  //animate ball
+  useEffect(() => {
+    let atStart = true;
+
+    const animationId = setInterval(() => {
+      if (atStart) {
+        setPosition(parentWidth - ball.current.offsetWidth);
+      } else {
+        setPosition(0);
+      }
+
+      atStart = !atStart;
+    }, ballAnimTime);
+
+    return () => clearInterval(animationId);
+  }, [parentWidth]);
+
+  return (
+    <div
+      style={{
+        translate: `${position}px -50%`,
+        transition: `translate ${ballAnimTime}ms, scale 10s`,
+        scale: mouseClicked ? 4 : audioLink ? 2 : 1,
+        top: "50%",
+        backgroundColor: mouseClicked ? `blue` : audioLink ? "#ffa200" : "black",
+        animation: mouseClicked ? `colorShow 4s infinite linear` : `none`
+      }}
+      className={styles.ball}
+      ref={ball}
+    ></div>
+  )
+}
 

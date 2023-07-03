@@ -92,7 +92,7 @@ export default async function Home() {
   let allInfo: baseReadData[] = [];
 
   try {
-    const allInfo = await prisma.base.findMany(
+    allInfo = await prisma.base.findMany(
       {
         orderBy: {
           createdAt: 'desc', // Sort by createdAt field in descending order (latest first)
