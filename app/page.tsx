@@ -44,6 +44,21 @@ export default async function Home() {
     console.log("couldnt fetch", error);
   }
 
+  async function updateBoard(input: baseReadData) {
+    "use server";
+
+    console.log(input)
+
+    await prisma.base.update({
+      where: {
+        id: input.id,
+      },
+      data: input,
+    })
+
+    revalidatePath("/");
+  }
+
   async function newBoard(input: baseReadData) {
     "use server";
 
@@ -154,7 +169,9 @@ export default async function Home() {
     <main className={styles.mainDiv}>
       <h1>Community Board</h1>
 
-      <BoardInput newBoard={newBoard} />
+      <BoardInput newBoard={newBoard}
+        updateBoard={updateBoard}
+      />
 
 
       <div className={styles.BoardsHolder}>
