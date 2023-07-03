@@ -3,17 +3,3 @@ const oldRecords = [{"username":"admin","text":"sup","id":"d6ddc4c8-571c-4244-96
 export default oldRecords
 
 
-// async function restoreOldRecords() {
-
-//     const oldRecArr = MeanSomething
-
-//     oldRecArr.map(async (eachObj) => {
-
-//       await prisma.base.create({
-//         data: eachObj,
-//       });
-//     })
-
-//   }
-
-//   // restoreOldRecords()

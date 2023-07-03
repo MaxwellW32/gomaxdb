@@ -23,9 +23,10 @@ export default function Board({
   imgLinks,
   ytLinks,
   createdAt,
-  deleteBoard: deleteBoard,
+  canBeDeleted,
+  deleteBoard,
 }: baseReadData &
-  { deleteBoard: (input: string) => void }) {
+  { deleteBoard: (input: string, canDelete: boolean) => void }) {
   const seenColors = colors!.split("|");
   const mainBoxRef = useRef<HTMLDivElement>(null!);
   const ball = useRef<HTMLDivElement>(null!);
@@ -176,7 +177,8 @@ export default function Board({
       audioLink: audioLink,
       imgLinks: imgLinks,
       ytLinks: ytLinks,
-      createdAt: createdAt
+      createdAt: createdAt,
+      canBeDeleted: canBeDeleted
     }
 
     activeNoteSelectedSet(newObj)
@@ -221,7 +223,11 @@ export default function Board({
           viewBox="0 0 512 512"
           onClick={(e) => {
             e.stopPropagation()
-            userTriedToDeleteSet(true)
+            if (canBeDeleted) {
+              userTriedToDeleteSet(true)
+            } else {
+              alert("cannot delete special user =)")
+            }
           }}
         >
           <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
@@ -242,7 +248,7 @@ export default function Board({
           <button
             className="mainBttn"
             onClick={(e) => {
-              deleteBoard(id!);
+              deleteBoard(id!, canBeDeleted!);
               userTriedToDeleteSet(false)
               e.stopPropagation()
 

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import Board from "@/Components/homepage/Board";
 import BoardInput from "@/Components/homepage/BoardInput";
 import addRndData from "@/utilities/AddRandomData";
+// import SaveBackupRecords from "@/utilities/SaveBackupRecords";
 
 const prisma = new PrismaClient();
 
@@ -23,71 +24,57 @@ interface baseReadData {
   audioLink: string | undefined;
   ytLinks: string | undefined;
   imgLinks: string | undefined;
+  canBeDeleted: boolean | undefined
 }
 
 
 export type { baseReadData };
 
-export default async function Home() {
-  let allInfo: baseReadData[] = [];
+async function updateBoard(input: baseReadData) {
+  "use server";
 
-  try {
-    allInfo = await prisma.base.findMany(
-      {
-        orderBy: {
-          createdAt: 'desc', // Sort by createdAt field in descending order (latest first)
-        },
-      }
-    );
+  await prisma.base.update({
+    where: {
+      id: input.id,
+    },
+    data: addRndData(input),
+  })
 
-  } catch (error) {
-    console.log("couldnt fetch", error);
-  }
+  revalidatePath("/");
+}
 
-  async function updateBoard(input: baseReadData) {
-    "use server";
+async function newBoard(input: baseReadData) {
+  "use server";
 
-    await prisma.base.update({
-      where: {
-        id: input.id,
-      },
-      data: addRndData(input),
-    })
+  await prisma.base.create({
+    data: addRndData(input),
+  });
 
-    revalidatePath("/");
-  }
+  revalidatePath("/");
 
-  async function newBoard(input: baseReadData) {
-    "use server";
+  // if (usingCustomSett) {
+  //   //validation
+  //   const preValidData = { ...input };
 
-    await prisma.base.create({
-      data: addRndData(input),
-    });
+  //   preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
+  //   preValidData.shapes =
+  //     preValidData.shapes && preValidData.shapes.length > 1
+  //       ? preValidData.shapes
+  //       : "BA";
+  //   preValidData.gravity =
+  //     preValidData.gravity >= 500 ? preValidData.gravity : 500;
+  //   preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
 
-    revalidatePath("/");
+  //   newRecordObj = { ...preValidData };
+  // } else {
+  //   newRecordObj = { ...input, ...mkRndBgData() };
+  // }
+}
 
-    // if (usingCustomSett) {
-    //   //validation
-    //   const preValidData = { ...input };
+async function deleteBoard(input: string, canDelete: boolean) {
+  "use server";
 
-    //   preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
-    //   preValidData.shapes =
-    //     preValidData.shapes && preValidData.shapes.length > 1
-    //       ? preValidData.shapes
-    //       : "BA";
-    //   preValidData.gravity =
-    //     preValidData.gravity >= 500 ? preValidData.gravity : 500;
-    //   preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
-
-    //   newRecordObj = { ...preValidData };
-    // } else {
-    //   newRecordObj = { ...input, ...mkRndBgData() };
-    // }
-  }
-
-  async function deleteBoard(input: string) {
-    "use server";
-
+  if (canDelete) {
     const seenId = input;
 
     await prisma.base.delete({
@@ -95,6 +82,28 @@ export default async function Home() {
     });
     console.log(`deleted specific ${seenId}`);
     revalidatePath("/");
+  } else {
+    console.log(`Cannot delete, this person is special to me ${input}`)
+  }
+}
+
+
+export default async function Home() {
+  let allInfo: baseReadData[] = [];
+
+  try {
+    const allInfo = await prisma.base.findMany(
+      {
+        orderBy: {
+          createdAt: 'desc', // Sort by createdAt field in descending order (latest first)
+        },
+      }
+    );
+
+    // SaveBackupRecords(allInfo)
+
+  } catch (error) {
+    console.log("couldnt fetch", error);
   }
 
   if (!allInfo) return "not yet found";

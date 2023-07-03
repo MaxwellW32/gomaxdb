@@ -29,6 +29,7 @@ export default function BoardInput({
     audioLink: "",
     ytLinks: "",
     imgLinks: "",
+    canBeDeleted: undefined
   };
 
   const [allData, allDataSet] = useState({ ...allDataInitialValue });

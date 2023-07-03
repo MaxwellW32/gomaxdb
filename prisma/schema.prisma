@@ -15,14 +15,15 @@ model base {
   username String
   text     String @db.Text
 
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  speed     Int      @default(0)
-  gravity   Int      @default(0)
-  angle     Int      @default(0)
-  shapes    String   @default("BA")
-  colors    String   @default("red|blue")
-  audioLink String   @default("") @db.Text
-  ytLinks   String   @default("") @db.Text
-  imgLinks  String   @default("") @db.Text
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  speed        Int      @default(0)
+  gravity      Int      @default(0)
+  angle        Int      @default(0)
+  shapes       String   @default("BA")
+  colors       String   @default("red|blue")
+  audioLink    String   @default("") @db.Text
+  ytLinks      String   @default("") @db.Text
+  imgLinks     String   @default("") @db.Text
+  canBeDeleted Boolean  @default(true)
 }
