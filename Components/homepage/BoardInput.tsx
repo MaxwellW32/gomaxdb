@@ -448,12 +448,37 @@ export default function BoardInput({
                 }}
                 value={colorComb[0]}
               />
+              <input
+                id="colorHex1"
+                className={styles.hexBoxInput}
+                type="color"
+                onChange={(e) => {
+                  colorCombSet((prevColorArr) => {
+                    prevColorArr[0] = e.target.value;
 
+                    return [...prevColorArr];
+                  });
+                }}
+                value={colorComb[0]}
+              />
               <input
                 id="colorName2"
                 placeholder="Enter second Color"
                 type="text"
                 style={{ borderRight: allData.colors && allData.colors!.split("|")[1] ? `10px solid ${allData.colors!.split("|")[1]}` : "none" }}
+                onChange={(e) => {
+                  colorCombSet((prevColorArr) => {
+                    prevColorArr[1] = e.target.value;
+
+                    return [...prevColorArr];
+                  });
+                }}
+                value={colorComb[1]}
+              />
+              <input
+                id="colorHex2"
+                className={styles.hexBoxInput}
+                type="color"
                 onChange={(e) => {
                   colorCombSet((prevColorArr) => {
                     prevColorArr[1] = e.target.value;

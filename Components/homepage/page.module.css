@@ -416,3 +416,8 @@
     margin-bottom: 2rem;
     border-radius: 5px;
 }
+
+.hexBoxInput {
+    width: 2rem;
+    height: 2rem;
+}
