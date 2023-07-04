@@ -105,19 +105,20 @@ export default function Board({
 
   //display stats
   useEffect(() => {
-    const newArr = [
-      `speed: ${speed}`,
-      `gravity: ${gravity}`,
-      `shapes: ${shapes}`,
-      `backgroundColors: ${seenColors[0]} + ${seenColors[1]}`,
-      `color rotation: ${angle}`,
-    ];
-
-    let arrPos = 0;
-
     let myInterv: NodeJS.Timer;
 
     if (mouseHovering && adminSignin) {
+
+      let fullObj: { [key: string]: any } = { id, speed, gravity, shapes, colors, angle, createdAt, canBeDeleted }
+
+      const newArr: string[] = [];
+
+      for (const key in fullObj) {
+        newArr.push(`${key}: ${fullObj[key]}`)
+      }
+
+      let arrPos = 0;
+
       myInterv = setInterval(() => {
         statsTextSet(newArr[arrPos]);
         arrPos++;
@@ -301,13 +302,15 @@ export default function Board({
         parentWidth={parentBoxHeightWidth[1]}
       />
 
-      {amountOfDroplets.map((eachItem) => (
+      {amountOfDroplets.map((eachItem, index) => (
         <Droplet
           key={eachItem}
-          gravity={gravity! + 500}
+          gravity={gravity!}
           shapes={shapes!}
           parentHeight={parentBoxHeightWidth[0]}
           musicPlaying={mouseClicked}
+          dropletNumber={index + 1}
+          totalDropletNumber={amountOfDroplets.length}
         />
       ))}
 
@@ -357,12 +360,16 @@ function Droplet({
   gravity,
   shapes,
   parentHeight,
-  musicPlaying
+  musicPlaying,
+  dropletNumber,
+  totalDropletNumber,
 }: {
-  gravity: number;
-  shapes: string;
-  parentHeight: number;
-  musicPlaying: boolean
+  gravity: number,
+  shapes: string,
+  parentHeight: number,
+  musicPlaying: boolean,
+  dropletNumber: number,
+  totalDropletNumber: number
 }) {
   const [rndX, rndXSet] = useState(Math.random() * 101);
   const [rndShapeSelect] = useState(Math.floor(Math.random() * 2));
@@ -378,18 +385,22 @@ function Droplet({
   const [initialYPos] = useState(0 - seenWidth);
   const [yPos, setYPos] = useState(initialYPos);
 
-  const [initialTransitionVal] = useState(
-    gravity - Math.floor(Math.random() * 251)
-  );
+  const [initialTransitionVal] = useState((gravity + 500) - Math.floor(Math.random() * 251));
   const [transitionVal, setTransitionVal] = useState(initialTransitionVal);
 
   useEffect(() => {
     let atBottom = false;
-    const rndTimer = Math.floor(Math.random() * 3001) + 200;
+    const rndTimer = ((gravity + 500) / totalDropletNumber * dropletNumber) - Math.floor(Math.random() * 251)
 
     setTimeout(() => {
+
+      setTransitionVal(initialTransitionVal);
+      setYPos(parentHeight);
+      atBottom = true
+
       const fallInterval = setInterval(() => {
         if (!atBottom) {
+          //at top
           setTransitionVal(initialTransitionVal);
           setYPos(parentHeight);
         } else {
@@ -400,6 +411,7 @@ function Droplet({
 
         atBottom = !atBottom;
       }, transitionVal);
+
     }, rndTimer);
   }, []);
 
