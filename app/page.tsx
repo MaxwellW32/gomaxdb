@@ -30,17 +30,56 @@ interface baseReadData {
 
 export type { baseReadData };
 
-async function updateBoard(input: baseReadData) {
+async function updateBoard(inputObj: baseReadData) {
   "use server";
 
-  await prisma.base.update({
-    where: {
-      id: input.id,
-    },
-    data: addRndData(input),
-  })
+  const validateOldObj = await prisma.base.findUnique({
+    where: { id: inputObj.id },
+  });
 
-  revalidatePath("/");
+  if (!validateOldObj) {
+    console.log(`couldnt even validate the oldObj for security`)
+    return
+  }
+
+  //push all the latest updates
+
+  if (validateOldObj.canBeDeleted) {
+    const newInputObj = addRndData(inputObj)
+
+    await prisma.base.update({
+      where: {
+        id: validateOldObj.id,
+      },
+      data: newInputObj,
+    })
+
+    revalidatePath("/");
+  } else {
+    //only take updated background info
+    const oldObjInfo = { ...validateOldObj }
+    const newInputObj = addRndData(inputObj)
+
+    oldObjInfo.speed = newInputObj.speed!
+    oldObjInfo.gravity = newInputObj.gravity!
+    oldObjInfo.colors = newInputObj.colors!
+    oldObjInfo.shapes = newInputObj.shapes!
+    oldObjInfo.angle = newInputObj.angle!
+
+    //take original info
+    //update - grav, speed, colors, shapes, angle from user input 
+
+    await prisma.base.update({
+      where: {
+        id: validateOldObj.id,
+      },
+      data: oldObjInfo,
+    })
+
+    revalidatePath("/");
+
+  }
+
 }
 
 async function newBoard(input: baseReadData) {
@@ -71,11 +110,20 @@ async function newBoard(input: baseReadData) {
   // }
 }
 
-async function deleteBoard(input: string, canDelete: boolean) {
+async function deleteBoard(input: string) {
   "use server";
 
-  if (canDelete) {
-    const seenId = input;
+  const validateOldObj = await prisma.base.findUnique({
+    where: { id: input },
+  });
+
+  if (!validateOldObj) {
+    console.log(`couldnt even validate the oldObj for security`)
+    return
+  }
+
+  if (validateOldObj.canBeDeleted) {
+    const seenId = validateOldObj.id;
 
     await prisma.base.delete({
       where: { id: seenId },
@@ -83,7 +131,7 @@ async function deleteBoard(input: string, canDelete: boolean) {
     console.log(`deleted specific ${seenId}`);
     revalidatePath("/");
   } else {
-    console.log(`Cannot delete, this person is special to me ${input}`)
+    console.log(`Cannot delete ${validateOldObj.username}, this person is special to me ${validateOldObj.text.substring(0, 20)}`)
   }
 }
 

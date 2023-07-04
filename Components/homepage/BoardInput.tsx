@@ -12,7 +12,7 @@ export default function BoardInput({
   updateBoard,
 }: {
   newBoard: (input: baseReadData) => Promise<void>,
-  updateBoard: (input: baseReadData) => void
+  updateBoard: (inputObj: baseReadData) => void
 }) {
   const [usingCustomSett, usingCustomSettSet] = useState(false);
   const recordTextTA = useRef<HTMLTextAreaElement>(null!)
@@ -158,6 +158,7 @@ export default function BoardInput({
         ) : (
           <h4>Send a message to sign in</h4>
         )}
+        {activeNoteSelected.id && !activeNoteSelected.canBeDeleted && <p style={{ fontSize: ".7rem", textAlign: "center", color: "gold" }}>Only background updates allowed</p>}
 
         <label htmlFor="usernameInput">Username</label>
         <input
