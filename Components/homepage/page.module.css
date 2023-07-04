@@ -208,6 +208,15 @@
     z-index: 999;
 }
 
+.threeDots {
+    fill: var(--customClickColorChange);
+    transition: fill 200ms;
+}
+
+.threeDots:hover {
+    fill: var(--customHighlight);
+}
+
 .moreSettingsCont svg {
     height: 1.5rem;
     aspect-ratio: 1/1;
