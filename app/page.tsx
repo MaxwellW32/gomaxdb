@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import Board from "@/Components/homepage/Board";
 import BoardInput from "@/Components/homepage/BoardInput";
 import addRndData from "@/utilities/AddRandomData";
+import YoutubeDefaultList from "@/utilities/YoutubeDefaultList";
 // import SaveBackupRecords from "@/utilities/SaveBackupRecords";
 
 const prisma = new PrismaClient();
@@ -138,7 +139,10 @@ async function deleteBoard(input: string) {
 
 export default async function Home() {
   let allInfo: baseReadData[] = [];
+  const rndStart = 0
+  // const rndStart = Math.floor(Math.random() * YoutubeDefaultList.length)
 
+  let arrIndex = 0
   try {
     allInfo = await prisma.base.findMany(
       {
@@ -166,13 +170,24 @@ export default async function Home() {
 
 
       <div className={styles.BoardsHolder}>
-        {allInfo.map((eachBoard) => (
-          <Board
-            key={eachBoard.id}
-            {...eachBoard}
-            deleteBoard={deleteBoard}
-          />
-        ))}
+
+        {allInfo.map((eachBoard) => {
+
+          const arrIndexToSend = rndStart + arrIndex
+          const canSendDefaultAudio = !eachBoard.audioLink
+          if (!eachBoard.audioLink) {
+            arrIndex++
+          }
+
+          return (
+            <Board
+              key={eachBoard.id}
+              {...eachBoard}
+              deleteBoard={deleteBoard}
+              defaultMusic={canSendDefaultAudio ? YoutubeDefaultList[arrIndexToSend % YoutubeDefaultList.length] : ""}
+            />
+          )
+        })}
       </div>
 
     </main>

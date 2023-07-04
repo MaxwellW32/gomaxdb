@@ -6,7 +6,6 @@ import startShapes from "@/utilities/StartShapes";
 import ReactPlayer from "react-player/youtube";
 import type { baseReadData } from "@/app/page";
 import Moment from 'react-moment';
-import YoutubeDefaultList from "@/utilities/YoutubeDefaultList";
 import { useAtom } from "jotai/react";
 import { noteSelected } from "@/utilities/GlobalState";
 
@@ -25,8 +24,9 @@ export default function Board({
   createdAt,
   canBeDeleted,
   deleteBoard,
+  defaultMusic
 }: baseReadData &
-  { deleteBoard: (input: string) => void }) {
+  { deleteBoard: (input: string) => void, defaultMusic: string }) {
   const seenColors = colors!.split("|");
   const mainBoxRef = useRef<HTMLDivElement>(null!);
 
@@ -135,9 +135,6 @@ export default function Board({
     };
   }, [mouseHovering, adminSignin]);
 
-  const [defaultAudio,] = useState<string>(() => {
-    return YoutubeDefaultList[Math.floor(Math.random() * YoutubeDefaultList.length)]
-  })
   const [mouseClicked, mouseClickedSet] = useState(false);
 
   const [, activeNoteSelectedSet] = useAtom(noteSelected)
@@ -292,7 +289,7 @@ export default function Board({
           url={
             audioLink
               ? audioLink
-              : defaultAudio
+              : defaultMusic ? defaultMusic : "https://www.youtube.com/watch?v=1XzY2ij_vL4&pp=ygUQbGlsIHRlY2NhIHJhbnNvbQ%3D%3D"
           }
         />
       </div>
