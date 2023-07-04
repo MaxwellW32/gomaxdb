@@ -390,7 +390,7 @@ function Droplet({
 
   useEffect(() => {
     let atBottom = false;
-    const rndTimer = ((gravity + 500) / totalDropletNumber * dropletNumber) - Math.floor(Math.random() * 251)
+    const rndTimer = ((gravity + 500) / totalDropletNumber * dropletNumber) - Math.floor(Math.random() * ((gravity + 500) / totalDropletNumber))
 
     setTimeout(() => {
 
