@@ -23,6 +23,12 @@ const YoutubeDefault = [
     "https://www.youtube.com/watch?v=fiusxyygqGk",
     "https://www.youtube.com/watch?v=bYiAspDYNgU",
     "https://www.youtube.com/watch?v=Lj-_mD0w474",
+    "https://www.youtube.com/watch?v=X_IO_7OoAEA&ab_channel=dileqre",
+    "https://www.youtube.com/watch?v=CAMWdvo71ls&pp=ygUOdG91cyBsZXMgbWVtZXM%3D",
+    "https://www.youtube.com/watch?v=uAOR6ib95kQ&pp=ygUIZ29yaWxsYXo%3D",
+    "https://www.youtube.com/watch?v=HyHNuVaZJ-k&ab_channel=Gorillaz",
+    "https://www.youtube.com/watch?v=bvC_0foemLY&ab_channel=RobinSchulz",
+    "https://www.youtube.com/watch?v=C-fexNlzMtQ&ab_channel=RoseateMusic"
 ]
 
 const YoutubeDefaultList = (array: any)=> {
