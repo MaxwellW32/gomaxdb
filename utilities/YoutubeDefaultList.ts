@@ -50,6 +50,7 @@ const YoutubeDefault = [
     "https://youtu.be/L7mfjvdnPno",
     "https://www.youtube.com/watch?v=8UVNT4wvIGY",
     "https://www.youtube.com/watch?v=0bOUOCo6NLQ",
+    "https://www.youtube.com/watch?v=3H5rtwc3epE"
   ]
 
 const YoutubeDefaultList = (array: any)=> {
