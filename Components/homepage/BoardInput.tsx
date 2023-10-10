@@ -242,7 +242,7 @@ export default function BoardInput({
         {allData.ytLinks &&
           <div className={styles.prevYtCont}>
             {JSON.parse(allData.ytLinks).map((eachLink: string, index: number) => (
-              <div className={styles.prevYtIndivCont}>
+              <div key={index} className={styles.prevYtIndivCont}>
                 <svg
                   className={styles.previewContCloseBttn}
                   onClick={() => {
@@ -288,7 +288,7 @@ export default function BoardInput({
         {allData.imgLinks &&
           <div className={styles.prevImageCont}>
             {JSON.parse(allData.imgLinks).map((eachLink: string, index: number) => (
-              <div className={styles.prevImgIndivCont}>
+              <div key={index} className={styles.prevImgIndivCont}>
                 <svg
                   className={styles.previewContCloseBttn}
                   onClick={() => {

@@ -7,6 +7,10 @@ import BoardInput from "@/Components/homepage/BoardInput";
 import addRndData from "@/utilities/AddRandomData";
 import YoutubeDefaultList from "@/utilities/YoutubeDefaultList";
 // import SaveBackupRecords from "@/utilities/SaveBackupRecords";
+import boardStorageData from "../boardStorage.json"
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 const prisma = new PrismaClient();
 
@@ -30,6 +34,42 @@ interface baseReadData {
 
 
 export type { baseReadData };
+
+async function saveToStorage(boardArr: baseReadData | baseReadData[]) {
+  "use server"
+
+  const fs = require('fs');
+
+  let jsonString = ""
+
+  if (Array.isArray(boardArr)) {
+    jsonString = JSON.stringify(boardArr);
+  } else {
+    jsonString = JSON.stringify([boardArr]);
+  }
+
+
+  if (jsonString.length < 1) {
+    return
+  }
+
+  fs.writeFile('boardStorage.json', jsonString, 'utf8', (err: Error) => {
+    if (err) {
+      console.error('Error writing file:', err);
+      return;
+    }
+    console.log('File written successfully');
+  });
+
+}
+
+
+async function readBoards() {
+  "use server";
+
+  return boardStorageData
+
+}
 
 async function updateBoard(inputObj: baseReadData) {
   "use server";
@@ -86,29 +126,16 @@ async function updateBoard(inputObj: baseReadData) {
 async function newBoard(input: baseReadData) {
   "use server";
 
-  await prisma.base.create({
-    data: addRndData(input),
-  });
+  const allBoards = boardStorageData
 
-  revalidatePath("/");
+  const newBoard = addRndData(input)
+  newBoard.id = uuidv4()
+  newBoard.createdAt = new Date()
 
-  // if (usingCustomSett) {
-  //   //validation
-  //   const preValidData = { ...input };
+  const allNewBoards = [newBoard, ...allBoards] as baseReadData[]
 
-  //   preValidData.speed = preValidData.speed >= 500 ? preValidData.speed : 500;
-  //   preValidData.shapes =
-  //     preValidData.shapes && preValidData.shapes.length > 1
-  //       ? preValidData.shapes
-  //       : "BA";
-  //   preValidData.gravity =
-  //     preValidData.gravity >= 500 ? preValidData.gravity : 500;
-  //   preValidData.angle = preValidData.angle >= 0 ? preValidData.angle : 0;
-
-  //   newRecordObj = { ...preValidData };
-  // } else {
-  //   newRecordObj = { ...input, ...mkRndBgData() };
-  // }
+  await saveToStorage(allNewBoards)
+  revalidatePath("/")
 }
 
 async function deleteBoard(input: string) {
@@ -143,20 +170,23 @@ export default async function Home() {
   // const rndStart = Math.floor(Math.random() * YoutubeDefaultList.length)
 
   let arrIndex = 0
-  try {
-    allInfo = await prisma.base.findMany(
-      {
-        orderBy: {
-          createdAt: 'desc', // Sort by createdAt field in descending order (latest first)
-        },
-      }
-    );
+  // try {
+  //   allInfo = await prisma.base.findMany(
+  //     {
+  //       orderBy: {
+  //         createdAt: 'desc', // Sort by createdAt field in descending order (latest first)
+  //       },
+  //     }
+  //   );
 
-    // SaveBackupRecords(allInfo)
+  //   // SaveBackupRecords(allInfo)
 
-  } catch (error) {
-    console.log("couldnt fetch", error);
-  }
+  // } catch (error) {
+  //   console.log("couldnt fetch", error);
+  // }
+
+  const seenData = await readBoards()
+  allInfo = seenData as unknown as baseReadData[] ?? []
 
   if (!allInfo) return "not yet found";
 
