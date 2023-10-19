@@ -2,7 +2,7 @@
 //save this to the boardStorage.json
 
 import { NextResponse } from "next/server";
-import boardStorageData from "../../boardStorage.json"
+import boardStorageData from "../../boardStorageBackup.json"
 
 //get all notes
 export async function GET(request: Request) {
